@@ -1,0 +1,612 @@
+﻿Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+з лабораторної роботи №2
+з дисципліни «Архітектура програмного забезпечення»
+на тему: «РОЗРОБКА СЕРВЕРНОЇ ЧАСТИНИ СИСТЕМИ»
+
+
+
+
+Виконав
+ст. гр. ПЗПІ-22-3
+Шуть Олександр Вікторович
+
+
+
+Перевірив
+ст. викладач кафедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+
+Харків 2025
+1 ІСТОРІЯ ЗМІН
+
+№	Дата	Версія звіту	Опис змін та виправлень
+1	6.04.2025	0.1	Створено розділ «Завдання»
+2	27.04.2025	0.1	Створено розділ «Опис виконаної роботи»
+3	28.04.2025	0.1	Наповнено додатки А та Б
+4	29.04.2025	0.1	Підбито висновки роботи
+5	01.05.2025	0.1	Заповнено додаток В з програмним кодом
+
+2 ЗАВДАННЯ
+
+     Метою даного лабораторного заняття є втілення функцій бізнес логіки та функцій адміністрування системи.
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+
+     До виконаної роботи було створено відеозвіт, посилання на який наведено у додатку А. 
+     У межах виконання проєкту було реалізовано програмну систему, орієнтовану на аналіз змін параметрів мікроклімату та їх впливу на емоційний стан користувачів. Основною функціональністю став перегляд історії змін мікроклімату з можливістю виконання регресійного та кореляційного аналізу, що дозволяє виявляти залежності між окремими показниками середовища та психологічним станом людини.
+     Крім аналітичного модуля, у систему було інтегровано механізм сповіщень, який інформує користувача про відхилення параметрів від комфортних значень та пропонує рекомендації щодо їх коригування. Це забезпечує оперативну реакцію на зміни умов середовища та сприяє підтриманню сприятливого мікроклімату.
+     Також було реалізовано адміністративний функціонал, що включає можливість резервного копіювання та відновлення бази даних. Це підвищує надійність системи та гарантує збереження інформації у разі збоїв. 
+     Окремо створено адміністративну панель для управління ролями користувачів і доступом до функціоналу системи, що дозволяє ефективно контролювати роботу в межах різних рівнів користувачів.
+
+ВИСНОВКИ
+
+     У результаті виконання даної лабораторної роботи було реалізовано ключові елементи бізнес-логіки програмної системи з використанням математичних методів аналізу, зокрема регресійного та кореляційного аналізу для оцінки впливу мікрокліматичних параметрів. Окрім цього, було впроваджено функціонал сповіщення користувачів та рекомендацій щодо покращення умов середовища, а також реалізовано повноцінні можливості адміністрування системи, включаючи управління правами доступу та резервне копіювання даних.
+
+ДОДАТОК А
+Відеозапис
+
+     Відеозапис презентації результатів лабораторної роботи: https://youtu.be/O5Wdy_NCjOc
+
+Хронологічний опис відеозапису: 
+00:00 Вітання 
+00:48 Функції бізнес логіки. Використання лінійної регресії та кореляції 
+03:08 Функції бізнес логіки. Використання нотифікацій 
+03:58 Функції адміністратора бази даних 
+06:01 Функції адміністратора системи 
+07:28 Функції адміністратора платформи 
+09:16 Висновки
+
+
+
+
+
+
+ДОДАТОК Б
+Графічні матеріали
+
+
+Рисунок Б.1 – UML діаграма прецедентів
+
+
+Рисунок Б.2 – ER-діаграма даних
+
+
+Рисунок Б.3 – UML діаграма розгортання
+
+
+
+Рисунок Б.4 – Діаграма діяльності для створення резервної копії та відновлення бази даних
+
+
+Рисунок Б.5 – Діаграма діяльності для аналізу даних кімнати (кореляційний та регресійний аналіз)
+
+ДОДАТОК В
+Програмний код
+
+     В.1 Математична обробка прикладних даних. Код файлу з розрахунком рівняння лінійної регресії та кореляційного аналізу. Основний код знаходится з 115 до 219 рядка.
+
+GitHub репозиторій: Посилання на файл
+
+1 import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
+2 import { Model, isValidObjectId } from 'mongoose'
+3 import { InjectModel } from '@nestjs/mongoose'
+4 import { Room, RoomDocument } from './rooms.schema'
+5 import { CreateRoomDto } from './dto/create-room.dto'
+6 import { UpdateRoomDto } from './dto/update-room.dto'
+7 import { UsersService } from '../users/users.service'
+8 import * as math from 'mathjs'
+9 import { NotificationsService } from '../notifications/notifications.service'
+10 import { ConfigService } from '../config/config.service'
+11
+12 @Injectable()
+13 export class RoomsService {
+14   constructor(
+15     @InjectModel(Room.name) private roomModel: Model<RoomDocument>,
+16     @Inject(forwardRef(() => UsersService))
+17     private readonly usersService: UsersService,
+18     private readonly configService: ConfigService,
+19     @Inject() private readonly notificationsService: NotificationsService,
+20   ) {}
+21
+22   async getAllRooms(): Promise<RoomDocument[]> {
+23     return this.roomModel.find().exec()
+24   }
+25
+26   async getRoomById(id: string): Promise<RoomDocument> {
+27     if (!isValidObjectId(id)) {
+28       throw new HttpException('Invalid room ID format', HttpStatus.BAD_REQUEST)
+29     }
+30
+31     const room = await this.roomModel.findById(id).exec()
+32
+33     if (!room) {
+34       throw new HttpException('Room not found', HttpStatus.NOT_FOUND)
+35     }
+36
+37     return room
+38   }
+39
+40   async create(dto: CreateRoomDto): Promise<RoomDocument> {
+41     if (!isValidObjectId(dto.user)) {
+42       throw new HttpException('Invalid user ID format', HttpStatus.BAD_REQUEST)
+43     }
+44
+45     await this.usersService.getUserById(dto.user) // Check if user exists
+46
+47     const room = new this.roomModel(dto)
+48     return room.save()
+49   }
+50
+51   async update(dto: UpdateRoomDto): Promise<RoomDocument> {
+52     if (!isValidObjectId(dto.id)) {
+53       throw new HttpException('Invalid room ID format', HttpStatus.BAD_REQUEST)
+54     }
+55
+56     const room = await this.roomModel.findById(dto.id).exec()
+57     if (!room) {
+58       throw new HttpException('Room not found', HttpStatus.NOT_FOUND)
+59     }
+60
+61     const historyChange = {
+62       temperature: room.temperature,
+63       moisture: room.moisture,
+64       carbonDioxide: room.carbonDioxide,
+65       illumination: room.illumination,
+66       updatedAt: new Date(),
+67     }
+68
+69     room.historyChanges.unshift(historyChange)
+70     Object.assign(room, dto)
+71     return room.save()
+72   }
+73
+74   async delete(id: string): Promise<RoomDocument> {
+75     if (!isValidObjectId(id)) {
+76       throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST)
+77     }
+78
+79     const room = await this.roomModel.findByIdAndDelete(id).exec()
+80
+81     if (!room) {
+82       throw new HttpException('Room not found', HttpStatus.NOT_FOUND)
+83     }
+84
+85     return room
+86   }
+87 
+88   public async deleteRoomsByUserId(id: string): Promise<void> {
+89     await this.roomModel.deleteMany({ user: id }).exec()
+90   }
+91
+92   public async recordChange(id: string, changes: Partial<UpdateRoomDto>): Promise<RoomDocument> {
+93     if (!isValidObjectId(id)) {
+94       throw new HttpException('Invalid room ID format', HttpStatus.BAD_REQUEST)
+95     }
+96
+97     const room = await this.roomModel.findById(id).exec()
+98     if (!room) {
+99       throw new HttpException('Room not found', HttpStatus.NOT_FOUND)
+100     }
+101
+102     const historyChange = {
+103       temperature: room.temperature,
+104       moisture: room.moisture,
+105       carbonDioxide: room.carbonDioxide,
+106       illumination: room.illumination,
+107       updatedAt: new Date(),
+108     }
+109
+110     room.historyChanges.unshift(historyChange)
+111     Object.assign(room, changes)
+112     return room.save()
+113   }
+114
+115   public async analyzeRoom(id: string): Promise<{ analysis: Record<string, any> }> {
+116     if (!isValidObjectId(id)) {
+117       throw new HttpException('Invalid room ID format', HttpStatus.BAD_REQUEST)
+118     }
+119
+120     const room = await this.roomModel.findById(id).exec()
+121     if (!room) {
+122       throw new HttpException('Room not found', HttpStatus.NOT_FOUND)
+123     }
+124
+125     const limitedHistory = room.historyChanges.slice(0, 4)
+126
+127     const combinedData = [
+128       {
+129         temperature: room.temperature,
+130         moisture: room.moisture,
+131         carbonDioxide: room.carbonDioxide,
+132         illumination: room.illumination,
+133       },
+134       ...limitedHistory,
+135     ]
+136
+137     const data: Record<string, number[]> = {
+138       temperature: combinedData.map(entry => entry.temperature),
+139       moisture: combinedData.map(entry => entry.moisture),
+140       carbonDioxide: combinedData.map(entry => entry.carbonDioxide),
+141       illumination: combinedData.map(entry => entry.illumination),
+142     }
+143
+144     const stats = this.calculateStatistics(data)
+145     const trends = this.detectTrends(data)
+146     const correlation = this.calculateCorrelation(data)
+147     const regression = this.performRegression(data)
+148
+149     const analysis = {
+150       statistics: stats,
+151       trends,
+152       correlation,
+153       regression,
+154       recommendations: this.generateRecommendations(trends),
+155     }
+156
+157     if (trends.length > 0) {
+158       trends.forEach(async trend => {
+159         await this.notificationsService.createNotification(room.user.toString(), trend)
+160       })
+161     }
+162
+163     return { analysis }
+164   }
+165
+166   private calculateStatistics(data: Record<string, number[]>): Record<string, number> {
+167     const statistics: Record<string, number> = {}
+168     for (const key in data) {
+169       const values = data[key]
+170       statistics[`${key}_mean`] = math.mean(values)
+171       statistics[`${key}_median`] = math.median(values)
+172       statistics[`${key}_min`] = math.min(values)
+173       statistics[`${key}_max`] = math.max(values)
+174       statistics[`${key}_range`] = math.max(values) - math.min(values)
+175     }
+176     return statistics
+177   }
+178
+179   private performRegression(data: Record<string, number[]>): string {
+180     // A simple regression analize: dependence of moisture on temperature
+181     const x = data.temperature
+182     const y = data.moisture
+183
+184     const meanX = math.mean(x) as number
+185     const meanY = math.mean(y) as number
+186     const slope =
+187       (math.sum(x.map((xi, idx) => (xi - meanX) * (y[idx] - meanY))) as number) /
+188       (math.sum(x.map(xi => math.square(xi - meanX))) as number)
+189     const intercept = meanY - slope * meanX
+190
+191     return `y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`
+192   }
+193
+194   private correlationCoefficient(x: number[], y: number[]): number {
+195     // A simple example of calculating correlation for two values
+196     const meanX = math.mean(x) as number
+197     const meanY = math.mean(y) as number
+198     const numerator = math.sum(x.map((xi, idx) => (xi - meanX) * (y[idx] - meanY))) as number
+199     const sumX = math.sum(x.map(xi => math.square(xi - meanX))) as number
+200     const sumY = math.sum(y.map(yi => math.square(yi - meanY))) as number
+201     const denominator = Math.sqrt(sumX * sumY)
+202     return numerator / denominator
+203   }
+204
+205   private calculateCorrelation(data: Record<string, number[]>): Record<string, number> {
+206     // Correlation between every key pair of parameters
+207     const keys = Object.keys(data)
+208     const correlationMatrix: Record<string, number> = {}
+209
+210     for (let i = 0; i < keys.length; i++) {
+211       for (let j = i + 1; j < keys.length; j++) {
+212         const key1 = keys[i]
+213         const key2 = keys[j]
+214         correlationMatrix[`${key1}-${key2}`] = this.correlationCoefficient(data[key1], data[key2])
+215       }
+216     }
+217
+218     return correlationMatrix
+219   }
+220
+221   detectTrends(data: Record<string, number[]>): string[] {
+222     const trends: string[] = []
+223     const statistics = this.calculateStatistics(data)
+224     const trendRules = this.configService.exportConfig()
+225
+226     trendRules.forEach(rule => {
+227       const value = statistics[rule.parameter]
+228       if ((rule.condition === '>' && value > rule.value) || (rule.condition === '<' && value < rule.value)) {
+229         trends.push(rule.message)
+230       }
+231     })
+232
+233     return Array.from(new Set(trends))
+234   }
+235
+236   private generateRecommendations(trends: string[]): string[] {
+237     const recommendations: string[] = []
+238
+239     const recommendationMap: Record<string, string> = {
+240       'Temperature is higher than normal': 'Consider lowering the temperature for comfort.',
+241       'Temperature is lower than normal': 'Consider raising the temperature to ensure comfort.',
+242       'Moisture level is critically low': 'Use a humidifier to increase moisture.',
+243       'Moisture level is too high': 'Use a dehumidifier to reduce moisture levels.',
+244       'CO2 concentration is dangerously high': 'Improve ventilation to reduce CO2 levels.',
+245       'CO2 concentration is unusually low': 'Ensure sensors are functioning correctly or adjust ventilation settings.',
+246       'Room is poorly illuminated': 'Increase lighting for better visibility.',
+247       'Room is over-illuminated': 'Reduce lighting to save energy and maintain comfort.',
+248     }
+249
+250     trends.forEach(trend => {
+251       if (recommendationMap[trend]) {
+252         recommendations.push(recommendationMap[trend])
+253       }
+254     })
+255
+256     return recommendations
+257   }
+258 }
+
+     В.2 Функції адміністратора баз даних. Створення резервних копій баз даних та відтворення бази даних до минулих версій
+
+GitHub репозиторій: Посилання на файл
+
+1 import { Injectable } from '@nestjs/common'
+2 import { exec } from 'child_process'
+3 import * as path from 'path'
+4 import * as fs from 'fs'
+5
+6 @Injectable()
+7 export class BackupService {
+8   private readonly rootDir = path.resolve(__dirname, '../../../')
+9   private readonly backupDir = path.join(this.rootDir, 'backups')
+10   private readonly mongoUri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.n6rx4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+11
+12   async createBackup(): Promise<{ success: boolean; message: string }> {
+13     if (!fs.existsSync(this.backupDir)) {
+14       fs.mkdirSync(this.backupDir, { recursive: true })
+15     }
+16
+17     const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+18     const backupPath = path.join(this.backupDir, `backup-${timestamp}`)
+19
+20     return new Promise(resolve => {
+21       const command = `mongodump --uri "${this.mongoUri}" --out ${backupPath}`
+22       exec(command, (error, stdout, stderr) => {
+23         if (error) {
+24           resolve({ success: false, message: stderr })
+25         } else {
+26           resolve({ success: true, message: `Backup created at ${backupPath}` })
+27         }
+28       })
+29     })
+30   }
+31
+32   async restoreBackup(filePath: string): Promise<{ success: boolean; message: string }> {
+33     if (!filePath || !fs.existsSync(filePath)) {
+34       return {
+35         success: false,
+36         message: `Invalid or missing filePath: ${filePath}`,
+37       }
+38     }
+39
+40     return new Promise(resolve => {
+41       const command = `mongorestore --uri "${this.mongoUri}" --dir ${filePath} --drop`
+42       exec(command, (error, stdout, stderr) => {
+43         if (error) {
+44           resolve({ success: false, message: stderr })
+45         } else {
+46           resolve({ success: true, message: 'Database restored successfully' })
+47         }
+48       })
+49     })
+50   }
+51 }
+
+     В.3 Функції системного адміністратора. Управління конфігураціями системи.
+
+GitHub репозиторій: Посилання на файл
+
+1 import { Injectable, OnModuleInit } from '@nestjs/common'
+2 import * as fs from 'fs'
+3 import * as path from 'path'
+4
+5 @Injectable()
+6 export class ConfigService implements OnModuleInit {
+7   private readonly configPath = path.join(process.cwd(), 'config/climate-config.json')
+8   private trendRules: { parameter: string; condition: string; value: number; message: string }[]
+9
+10   // Initializes the service by creating or loading the config file
+11   async onModuleInit() {
+12     try {
+13       const configDir = path.dirname(this.configPath)
+14       if (!fs.existsSync(configDir)) {
+15         fs.mkdirSync(configDir, { recursive: true })
+16       }
+17
+18       if (!fs.existsSync(this.configPath)) {
+19         const defaultRules = [
+20           { parameter: 'temperature_mean', condition: '>', value: 25, message: 'Temperature is higher than normal' },
+21           { parameter: 'temperature_mean', condition: '<', value: 18, message: 'Temperature is lower than normal' },
+22           { parameter: 'moisture_mean', condition: '<', value: 30, message: 'Moisture level is critically low' },
+23           { parameter: 'moisture_mean', condition: '>', value: 60, message: 'Moisture level is too high' },
+24           {
+25             parameter: 'carbonDioxide_mean',
+26             condition: '>',
+27             value: 1000,
+28             message: 'CO2 concentration is dangerously high',
+29           },
+30           {
+31             parameter: 'carbonDioxide_mean',
+32             condition: '<',
+33             value: 400,
+34             message: 'CO2 concentration is unusually low',
+35           },
+36           { parameter: 'illumination_mean', condition: '<', value: 200, message: 'Room is poorly illuminated' },
+37           { parameter: 'illumination_mean', condition: '>', value: 800, message: 'Room is over-illuminated' },
+38         ]
+39         fs.writeFileSync(this.configPath, JSON.stringify(defaultRules, null, 2))
+40         console.log('Default config file created')
+41       }
+42
+43       this.trendRules = JSON.parse(fs.readFileSync(this.configPath, 'utf-8'))
+44     } catch (error) {
+45       throw error
+46     }
+47   }
+48
+49   // Returns the current configuration rules
+50   exportConfig() {
+51     return this.trendRules
+52   }
+53
+54   // Imports and validates new configuration, saving it to the config file
+55   importConfig(config: any[]) {
+56     const validParameters = ['temperature_mean', 'moisture_mean', 'carbonDioxide_mean', 'illumination_mean']
+57     const validConditions = ['>', '<']
+58
+59     for (const rule of config) {
+60       if (
+61         !rule.parameter ||
+62         !validParameters.includes(rule.parameter) ||
+63         !rule.condition ||
+64         !validConditions.includes(rule.condition) ||
+65         typeof rule.value !== 'number' ||
+66         !rule.message ||
+67         typeof rule.message !== 'string'
+68       ) {
+69         throw new Error('Invalid config format')
+70       }
+71     }
+72
+73     this.trendRules = config
+74     fs.writeFileSync(this.configPath, JSON.stringify(config, null, 2))
+75     console.log('Config imported and saved')
+76     return { message: 'Config imported successfully' }
+77   }
+78 }
+     В.4 Функції платформенного адміністратора. Зміна ролей користувачів.
+
+GitHub репозиторій: Посилання на файл
+
+1 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+2 import { InjectModel } from '@nestjs/mongoose'
+3 import { Role, RoleDocument } from './roles.schema'
+4 import { isValidObjectId, Model } from 'mongoose'
+5 import { CreateRoleDto } from './dto/create-role.dto'
+6 import { UpdateRoleDto } from './dto/update-role.dto'
+7 import { User, UserDocument } from '../users/users.schema'
+8 import { UpdateUserRoleDto } from './dto/update-user-role.dto'
+9
+10 @Injectable()
+11 export class RolesService {
+12   constructor(
+13     @InjectModel(Role.name) private roleModel: Model<RoleDocument>,
+14     @InjectModel(User.name) private userModel: Model<UserDocument>,
+15   ) {}
+16
+17   // Retrieves a role by its value from the database
+18   async getRoleByValue(value: string): Promise<RoleDocument> {
+19     const role = await this.roleModel.findOne({ value }).exec()
+20
+21     if (!role) throw new HttpException('Role not found by this name or has not been initialized', HttpStatus.NOT_FOUND)
+22
+23     return role
+24   }
+25
+26   // Fetches all roles from the database
+27   async getRoles(): Promise<RoleDocument[]> {
+28     return this.roleModel.find().exec()
+29   }
+30
+31   // Creates a new role if it doesn't already exist
+32   async createRole(dto: CreateRoleDto): Promise<RoleDocument> {
+33     const isExist = await this.roleModel.exists({ value: dto.value })
+34
+35     if (isExist) throw new HttpException('Role already exist', HttpStatus.BAD_REQUEST)
+36
+37     const role = new this.roleModel(dto)
+38     return role.save()
+39   }
+40
+41   // Updates an existing role's value and description
+42   async updateRole(dto: UpdateRoleDto): Promise<RoleDocument> {
+43     if (!isValidObjectId(dto.id)) {
+44       throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST)
+45     }
+46
+47     const role = await this.roleModel.findById(dto.id).exec()
+48
+49     if (!role) {
+50       throw new HttpException('Role not found', HttpStatus.NOT_FOUND)
+51     }
+52
+53     dto.value = dto.value.toUpperCase()
+54
+55     const isExist = await this.roleModel.exists({ value: dto.value })
+56
+57     if (isExist) throw new HttpException('Role already exist', HttpStatus.BAD_REQUEST)
+58
+59     const updatedRole = await this.roleModel
+60       .findByIdAndUpdate(dto.id, { value: dto.value, description: dto.description }, { new: true })
+61       .exec()
+62
+63     return updatedRole
+64   }
+65
+66   // Assigns a role to a user by updating their role ID
+67   async updateUserRole(dto: UpdateUserRoleDto): Promise<UserDocument> {
+68     if (!isValidObjectId(dto.user_id)) {
+69       throw new HttpException('Invalid user ID format', HttpStatus.BAD_REQUEST)
+70     }
+71
+72     const user = await this.userModel.findById(dto.user_id)
+73     if (!user) {
+74       throw new HttpException('User with the specified ID does not exist', HttpStatus.NOT_FOUND)
+75     }
+76 
+77     const role = await this.getRoleByValue(dto.role_name)
+78     if (!role) {
+79       throw new HttpException('Specified role not found', HttpStatus.NOT_FOUND)
+80     }
+81
+82     user.roles = [role._id]
+83     await user.save()
+84
+85     return user
+86   }
+87
+88   // Deletes a role if it exists and is not assigned to any users
+89   async deleteRole(id: string): Promise<RoleDocument> {
+90     if (!isValidObjectId(id)) {
+91       throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST)
+92     }
+93
+94     const role = await this.roleModel.findById(id).exec()
+95
+96     if (!role) {
+97       throw new HttpException('Role not found', HttpStatus.NOT_FOUND)
+98     }
+99
+100     const users = await this.userModel.find({ roles: { $in: [role._id] } }).exec()
+101
+102     if (users.length) {
+103       throw new HttpException('Role is used by users', HttpStatus.BAD_REQUEST)
+104     }
+105
+106     const deletedRole = await this.roleModel.findByIdAndDelete(id).exec()
+107
+108     return deletedRole
+109   }
+110 }
+
