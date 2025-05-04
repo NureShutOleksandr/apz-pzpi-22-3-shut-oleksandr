@@ -30,7 +30,7 @@ export class RolesController {
 
   @ApiOperation({ summary: 'Get all roles ' })
   @ApiResponse({ status: 200, type: [Role] })
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'PLATFORM_ADMIN')
   @UseGuards(RolesGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -40,7 +40,7 @@ export class RolesController {
 
   @ApiOperation({ summary: 'Get role by value' })
   @ApiResponse({ status: 200, type: Role })
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'PLATFORM_ADMIN')
   @UseGuards(RolesGuard)
   @Get('/:value')
   @HttpCode(HttpStatus.OK)
@@ -51,7 +51,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Create role' })
   @ApiResponse({ status: 201, type: Role })
   @UsePipes(ValidationPipe)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'PLATFORM_ADMIN')
   @UseGuards(RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -63,7 +63,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Update role' })
   @ApiResponse({ status: 200, type: Role })
   @UsePipes(ValidationPipe)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'PLATFORM_ADMIN')
   @UseGuards(RolesGuard)
   @Patch()
   @HttpCode(HttpStatus.OK)
@@ -74,7 +74,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Update user role' })
   @ApiResponse({ status: 200, type: Role })
   @UsePipes(ValidationPipe)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'PLATFORM_ADMIN')
   @UseGuards(RolesGuard)
   @Patch('/update-user-role')
   @HttpCode(HttpStatus.OK)
@@ -84,7 +84,7 @@ export class RolesController {
 
   @ApiOperation({ summary: 'Delete role' })
   @ApiResponse({ status: 200, type: Role })
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'PLATFORM_ADMIN')
   @UseGuards(RolesGuard)
   @Delete('/:id')
   delete(@Param('id') id: string): Promise<RoleDocument> {

@@ -15,7 +15,7 @@ export class BackupController {
 
   @ApiOperation({ summary: 'create backup ' })
   @ApiResponse({ status: 200 })
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'DATABASE_ADMIN')
   @UseGuards(RolesGuard)
   @Post('create')
   async createBackup(@Res() res: Response) {
@@ -25,7 +25,7 @@ export class BackupController {
 
   @ApiOperation({ summary: 'make restore for db' })
   @ApiResponse({ status: 200 })
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'DATABASE_ADMIN')
   @UseGuards(RolesGuard)
   @Post('restore')
   async restoreBackup(@Body() body: ResoteReqDto, @Res() res: Response) {

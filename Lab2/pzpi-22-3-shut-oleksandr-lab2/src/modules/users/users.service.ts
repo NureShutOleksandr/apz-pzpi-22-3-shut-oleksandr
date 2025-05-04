@@ -19,9 +19,8 @@ export class UsersService {
   ) {}
 
   async getAllUsers(): Promise<UserDocument[]> {
-    const user = await this.userModel.find()
-
-    return user
+    const users = await this.userModel.find().populate('roles').exec()
+    return users
   }
 
   async getUserById(id: string): Promise<UserDocument> {
