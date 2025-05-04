@@ -1,0 +1,50 @@
+[
+  {
+    "parameter": "temperature_mean",
+    "condition": ">",
+    "value": 29,
+    "message": "Temperature is excessively high"
+  },
+  {
+    "parameter": "temperature_mean",
+    "condition": "<",
+    "value": 18,
+    "message": "Temperature is too cold"
+  },
+  {
+    "parameter": "moisture_mean",
+    "condition": "<",
+    "value": 25,
+    "message": "Humidity is very low"
+  },
+  {
+    "parameter": "moisture_mean",
+    "condition": ">",
+    "value": 65,
+    "message": "Humidity is overly high"
+  },
+  {
+    "parameter": "carbonDioxide_mean",
+    "condition": ">",
+    "value": 1200,
+    "message": "CO2 levels are critical"
+  },
+  {
+    "parameter": "carbonDioxide_mean",
+    "condition": "<",
+    "value": 350,
+    "message": "CO2 levels are unusually low"
+  },
+  {
+    "parameter": "illumination_mean",
+    "condition": "<",
+    "value": 150,
+    "message": "Lighting is insufficient"
+  },
+  {
+    "parameter": "illumination_mean",
+    "condition": ">",
+    "value": 900,
+    "message": "Lighting is too bright"
+  }
+]
