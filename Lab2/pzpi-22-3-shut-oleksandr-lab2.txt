@@ -76,10 +76,13 @@
 Графічні матеріали
 
 
-Рисунок Б.1 – UML діаграма прецедентів
+Рисунок Б.1 — ER-діаграма даних
 
 
-Рисунок Б.2 – ER-діаграма даних
+Рисунок Б.2 — Структура бази даних
+
+
+Рисунок Б.3 — UML-діаграма прецедентів
 
 
 Рисунок Б.3 – UML діаграма розгортання
@@ -96,7 +99,7 @@
 
      В.1 Математична обробка прикладних даних. Код файлу з розрахунком рівняння лінійної регресії та кореляційного аналізу. Основний код знаходится з 115 до 219 рядка.
 
-GitHub репозиторій: Посилання на файл
+GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab2/pzpi-22-3-shut-oleksandr-lab2/src/modules/rooms/rooms.service.ts
 
 1 import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 2 import { Model, isValidObjectId } from 'mongoose'
@@ -359,7 +362,7 @@ GitHub репозиторій: Посилання на файл
 
      В.2 Функції адміністратора баз даних. Створення резервних копій баз даних та відтворення бази даних до минулих версій
 
-GitHub репозиторій: Посилання на файл
+GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab2/pzpi-22-3-shut-oleksandr-lab2/src/modules/backup/backup.service.ts
 
 1 import { Injectable } from '@nestjs/common'
 2 import { exec } from 'child_process'
@@ -414,8 +417,9 @@ GitHub репозиторій: Посилання на файл
 51 }
 
      В.3 Функції системного адміністратора. Управління конфігураціями системи.
+ Адміністрування бізнес-логіки системи.
 
-GitHub репозиторій: Посилання на файл
+GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab2/pzpi-22-3-shut-oleksandr-lab2/src/modules/config/config.service.ts
 
 1 import { Injectable, OnModuleInit } from '@nestjs/common'
 2 import * as fs from 'fs'
@@ -497,7 +501,7 @@ GitHub репозиторій: Посилання на файл
 78 }
      В.4 Функції платформенного адміністратора. Зміна ролей користувачів.
 
-GitHub репозиторій: Посилання на файл
+GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab2/pzpi-22-3-shut-oleksandr-lab2/src/modules/roles/roles.service.ts
 
 1 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 2 import { InjectModel } from '@nestjs/mongoose'
@@ -609,4 +613,5 @@ GitHub репозиторій: Посилання на файл
 108     return deletedRole
 109   }
 110 }
+
 
