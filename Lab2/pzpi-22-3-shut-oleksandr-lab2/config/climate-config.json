@@ -2,7 +2,7 @@
   {
     "parameter": "temperature_mean",
     "condition": ">",
-    "value": 29,
+    "value": 31,
     "message": "Temperature is excessively high"
   },
   {

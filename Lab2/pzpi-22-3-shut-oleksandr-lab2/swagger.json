@@ -806,8 +806,13 @@
             "description": ""
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "tags": [
-          "Config"
+          "config"
         ]
       }
     },
@@ -833,8 +838,13 @@
             "description": ""
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "tags": [
-          "Config"
+          "config"
         ]
       }
     },

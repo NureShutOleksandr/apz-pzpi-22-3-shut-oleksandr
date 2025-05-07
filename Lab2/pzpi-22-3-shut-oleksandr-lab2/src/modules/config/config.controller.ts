@@ -3,7 +3,10 @@ import { ConfigService } from './config.service'
 import { Response } from 'express'
 import { Roles } from '../roles/roles-auth.decorator'
 import { RolesGuard } from '../roles/roles.guard'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
+@ApiTags('config')
+@ApiBearerAuth()
 @Controller('config')
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}

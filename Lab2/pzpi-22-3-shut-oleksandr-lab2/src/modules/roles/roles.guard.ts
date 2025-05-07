@@ -29,6 +29,7 @@ export class RolesGuard implements CanActivate {
 
       const req = context.switchToHttp().getRequest()
       const authHeader = req.headers.authorization
+
       const [bearer, token] = authHeader.split(' ')
 
       if (bearer !== 'Bearer' || !token) {
@@ -38,6 +39,7 @@ export class RolesGuard implements CanActivate {
       const user = this.jwtService.verify(token, { secret: process.env.JWT_ACCESS_SECRET })
 
       req.user = user
+
       return user.roles.some((role: { value: string }) => requiredRoles.includes(role.value))
     } catch (e) {
       throw new HttpException('have no access', HttpStatus.FORBIDDEN)
