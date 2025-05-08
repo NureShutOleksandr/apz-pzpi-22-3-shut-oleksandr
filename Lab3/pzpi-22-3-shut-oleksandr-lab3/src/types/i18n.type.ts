@@ -1,1 +1,1 @@
-export type ResourcesType = 'uk' | 'en'
+export type ResourcesType = 'ua' | 'en'

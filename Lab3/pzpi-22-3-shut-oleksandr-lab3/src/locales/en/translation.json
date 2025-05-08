@@ -1,3 +1,6 @@
 {
-  "button": "Button"
+  "button": "Button",
+  "logout": "Logout",
+  "login": "Login",
+  "sign-up": "Sign up"
 }

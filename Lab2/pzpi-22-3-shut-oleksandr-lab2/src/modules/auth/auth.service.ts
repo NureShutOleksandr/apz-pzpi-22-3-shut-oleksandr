@@ -10,6 +10,7 @@ import { TokenResponseDto } from './dto/token-response.dto'
 import { UpdatePasswordReqDto } from './dto/update-password-req.dto'
 import { UpdatePasswordResponseDto } from './dto/update-password-response.dto'
 import { ResetPasswordResponseDto } from './dto/reset-password-response.dto'
+import { Request } from 'express'
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,29 @@ export class AuthService {
     private readonly usersService: UsersService,
     private jwtService: JwtService,
   ) {}
+
+  async authMe(req: Request): Promise<User> {
+    const authHeader = req.headers.authorization
+
+    if (!authHeader || !authHeader.startsWith('Bearer '))
+      throw new UnauthorizedException('Authorization header missing or malformed')
+
+    const token = authHeader.split(' ')[1]
+
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: process.env.JWT_ACCESS_SECRET,
+      })
+
+      const user = await this.usersService.getUserById(payload.id)
+
+      if (!user) throw new UnauthorizedException('User not found')
+
+      return user
+    } catch (err) {
+      throw new UnauthorizedException('Invalid or expired token')
+    }
+  }
 
   async login(dto: CreateUserDto): Promise<TokenResponseDto> {
     const user = await this.validateUser(dto)
