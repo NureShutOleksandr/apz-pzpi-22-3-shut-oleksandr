@@ -5,12 +5,14 @@ import MainLayout from '@shared/layouts/main.layout'
 import { ToastError, ToastSuccess } from '@utils/toast.config'
 import { ErrorHandle } from '@utils/error-handler'
 import { useAuthStore } from '@store/store'
+import { useTranslation } from 'react-i18next'
 
 export const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
   const register = useAuthStore(state => state.register)
+  const { t } = useTranslation()
 
   const navigate = useNavigate()
 
@@ -30,29 +32,29 @@ export const RegisterPage: React.FC = () => {
   return (
     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <LoginForm onSubmit={handleSubmit}>
-        <Title>Sign up</Title>
+        <Title>{t('register.title')}</Title>
         <Input
           type="text"
-          placeholder="Username"
+          placeholder={t('register.username')}
           value={username}
           onChange={e => setUsername(e.target.value)}
           required
         />
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={t('register.password')}
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
         <Input
           type="password"
-          placeholder="Repeat password"
+          placeholder={t('register.repeatPassword')}
           value={repeatPassword}
           onChange={e => setRepeatPassword(e.target.value)}
           required
         />
-        <Button type="submit">Sign up</Button>
+        <Button type="submit">{t('register.button')}</Button>
       </LoginForm>
     </MainLayout>
   )

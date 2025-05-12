@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
 
   *, *::before, *::after {
     box-sizing: inherit;
-    font-family: ${FONTS.INTER}, sans-serif;
+    font-family: ${FONTS.MANROPE}, sans-serif;
   }
 
   h1,

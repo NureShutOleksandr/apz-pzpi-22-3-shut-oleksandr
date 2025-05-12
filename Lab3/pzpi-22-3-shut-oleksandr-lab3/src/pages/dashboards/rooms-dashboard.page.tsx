@@ -5,8 +5,11 @@ import { useRoomStore } from '@store/rooms.store'
 import { useAuthStore } from '@store/store'
 import type { CreateRoomDto } from '~types/room.type'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { temperatureToDisplay } from '@utils/parsers'
 
 export const RoomsDashboard: React.FC = () => {
+  const { t, i18n } = useTranslation()
   const rooms = useRoomStore(state => state.rooms)
   const createRoom = useRoomStore(state => state.createRoom)
   const getRooms = useRoomStore(state => state.getRooms)
@@ -67,8 +70,8 @@ export const RoomsDashboard: React.FC = () => {
     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '2rem 0' }}>
       <RoomsContainer>
         <Header>
-          <Title>Rooms</Title>
-          <CreateRoomButton onClick={handleOpenModal}>Create Room</CreateRoomButton>
+          <Title>{t('roomsDashboard.title')}</Title>
+          <CreateRoomButton onClick={handleOpenModal}>{t('roomsDashboard.createRoom')}</CreateRoomButton>
         </Header>
         <RoomsList>
           {rooms &&
@@ -76,14 +79,20 @@ export const RoomsDashboard: React.FC = () => {
               <RoomItem key={room._id}>
                 <RoomName>{room.roomName}</RoomName>
                 <RoomDetails>
-                  <Detail>Temperature: {room.temperature}°C</Detail>
-                  <Detail>Moisture: {room.moisture}%</Detail>
-                  <Detail>CO2: {room.carbonDioxide} ppm</Detail>
-                  <Detail>Illumination: {room.illumination} lux</Detail>
+                  <Detail>
+                    {t('room.temperature', { value: temperatureToDisplay(i18n.language, room.temperature) })}
+                  </Detail>
+                  <Detail>{t('room.moisture', { value: room.moisture })}</Detail>
+                  <Detail>{t('room.co2', { value: room.carbonDioxide })}</Detail>
+                  <Detail>{t('room.illumination', { value: room.illumination })}</Detail>
                 </RoomDetails>
                 <RoomActionsCOntainer>
-                  <GoToButton onClick={() => handleNavigateToRoom(room._id.toString())}>Перейти</GoToButton>
-                  <DeleteRoomButton onClick={() => handleDeleteRoom(room._id.toString())}>Видалити</DeleteRoomButton>
+                  <GoToButton onClick={() => handleNavigateToRoom(room._id.toString())}>
+                    {t('roomsDashboard.goTo')}
+                  </GoToButton>
+                  <DeleteRoomButton onClick={() => handleDeleteRoom(room._id.toString())}>
+                    {t('roomsDashboard.delete')}
+                  </DeleteRoomButton>
                 </RoomActionsCOntainer>
               </RoomItem>
             ))}
@@ -93,71 +102,71 @@ export const RoomsDashboard: React.FC = () => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <ModalTitle>Create New Room</ModalTitle>
+              <ModalTitle>{t('roomsDashboard.createNewRoom')}</ModalTitle>
               <CloseButton onClick={handleCloseModal}>×</CloseButton>
             </ModalHeader>
             <ModalForm onSubmit={handleSubmitRoomCreate}>
               <InputGroup>
-                <Label htmlFor="roomName">Room Name</Label>
+                <Label htmlFor="roomName">{t('roomsDashboard.roomName')}</Label>
                 <Input
                   type="text"
                   id="roomName"
                   name="roomName"
                   value={formData.roomName}
                   onChange={handleInputChange}
-                  placeholder="Enter room name"
+                  placeholder={t('roomsDashboard.enterRoomName')}
                   required
                 />
               </InputGroup>
               <InputGroup>
-                <Label htmlFor="temperature">Temperature (°C)</Label>
+                <Label htmlFor="temperature">{t('roomsDashboard.temperature')}</Label>
                 <Input
                   type="number"
                   id="temperature"
                   name="temperature"
                   value={formData.temperature}
                   onChange={handleInputChange}
-                  placeholder="Enter temperature"
+                  placeholder={t('roomsDashboard.enterTemperature')}
                   required
                 />
               </InputGroup>
               <InputGroup>
-                <Label htmlFor="moisture">Moisture (%)</Label>
+                <Label htmlFor="moisture">{t('roomsDashboard.moisture')}</Label>
                 <Input
                   type="number"
                   id="moisture"
                   name="moisture"
                   value={formData.moisture}
                   onChange={handleInputChange}
-                  placeholder="Enter moisture"
+                  placeholder={t('roomsDashboard.enterMoisture')}
                   required
                 />
               </InputGroup>
               <InputGroup>
-                <Label htmlFor="carbonDioxide">CO2 (ppm)</Label>
+                <Label htmlFor="carbonDioxide">{t('roomsDashboard.co2')}</Label>
                 <Input
                   type="number"
                   id="carbonDioxide"
                   name="carbonDioxide"
                   value={formData.carbonDioxide}
                   onChange={handleInputChange}
-                  placeholder="Enter CO2 level"
+                  placeholder={t('roomsDashboard.enterCo2')}
                   required
                 />
               </InputGroup>
               <InputGroup>
-                <Label htmlFor="illumination">Illumination (lux)</Label>
+                <Label htmlFor="illumination">{t('roomsDashboard.illumination')}</Label>
                 <Input
                   type="number"
                   id="illumination"
                   name="illumination"
                   value={formData.illumination}
                   onChange={handleInputChange}
-                  placeholder="Enter illumination"
+                  placeholder={t('roomsDashboard.enterIllumination')}
                   required
                 />
               </InputGroup>
-              <SubmitButton type="submit">Create Room</SubmitButton>
+              <SubmitButton type="submit">{t('roomsDashboard.create')}</SubmitButton>
             </ModalForm>
           </ModalContent>
         </ModalOverlay>

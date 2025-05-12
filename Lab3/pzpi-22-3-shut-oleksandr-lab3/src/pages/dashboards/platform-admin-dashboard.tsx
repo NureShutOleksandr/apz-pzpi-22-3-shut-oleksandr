@@ -3,6 +3,7 @@ import MainLayout from '@shared/layouts/main.layout'
 import styled from 'styled-components'
 import { usePlatformAdminStore } from '@store/platformAdmin.store'
 import { useAuthStore } from '@store/store'
+import { useTranslation } from 'react-i18next'
 
 export const PlatformAdminDashboard: React.FC = () => {
   const { roles, isLoadingRoles, isUpdatingRole, getRoles, updateUserRole } = usePlatformAdminStore()
@@ -10,6 +11,7 @@ export const PlatformAdminDashboard: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<string>('')
   const [selectedRole, setSelectedRole] = useState<string>('')
   const [searchTerm, setSearchTerm] = useState<string>('')
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,27 +53,29 @@ export const PlatformAdminDashboard: React.FC = () => {
     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '2rem 0' }}>
       <DashboardContainer>
         <Header>
-          <Title>Platform Admin Dashboard</Title>
+          <Title>{t('platformAdminDashboard.title')}</Title>
         </Header>
         <ActionsList>
           <ActionItem>
-            <ActionLabel>Update User Role</ActionLabel>
+            <ActionLabel>{t('platformAdminDashboard.updateUserRole')}</ActionLabel>
             {isLoadingRoles ? (
-              <LoadingText>Loading roles...</LoadingText>
+              <LoadingText>{t('platformAdminDashboard.loadingRoles')}</LoadingText>
             ) : (
               <>
                 <SelectContainer>
                   <SelectedUserText>
                     {selectedUserId
-                      ? `Selected User: ${users?.find(u => u._id === selectedUserId)?.username || 'Unknown'}`
-                      : 'No user selected'}
+                      ? t('platformAdminDashboard.selectedUser', {
+                          username: users?.find(u => u._id === selectedUserId)?.username || 'Unknown',
+                        })
+                      : t('platformAdminDashboard.noUserSelected')}
                   </SelectedUserText>
                   <Select
                     value={selectedRole}
                     onChange={e => setSelectedRole(e.target.value)}
                     disabled={isUpdatingRole}
                   >
-                    <option value="">Select Role</option>
+                    <option value="">{t('platformAdminDashboard.selectRole')}</option>
                     {roles?.map(role => (
                       <option key={role._id} value={role.value}>
                         {role.value} ({role.description})
@@ -80,16 +84,16 @@ export const PlatformAdminDashboard: React.FC = () => {
                   </Select>
                 </SelectContainer>
                 <UpdateButton onClick={handleUpdateRole} disabled={isUpdatingRole}>
-                  {isUpdatingRole ? 'Updating...' : 'Update Role'}
+                  {isUpdatingRole ? t('platformAdminDashboard.updating') : t('platformAdminDashboard.updateRoleButton')}
                 </UpdateButton>
               </>
             )}
           </ActionItem>
           <ActionItem>
-            <ActionLabel>User List</ActionLabel>
+            <ActionLabel>{t('platformAdminDashboard.userList')}</ActionLabel>
             <SearchInput
               type="text"
-              placeholder="Search users..."
+              placeholder={t('platformAdminDashboard.searchUsers')}
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />

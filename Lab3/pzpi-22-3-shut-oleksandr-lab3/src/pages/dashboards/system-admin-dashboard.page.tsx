@@ -3,11 +3,13 @@ import MainLayout from '@shared/layouts/main.layout'
 import styled from 'styled-components'
 import { useSystemAdminStore } from '@store/systemAdmin.store'
 import { configExample } from '@shared/consts/config-example.const'
+import { useTranslation } from 'react-i18next'
 
 export const SystemAdminDashboard: React.FC = () => {
   const { lastExportedConfig, isExporting, isImporting, exportConfig, importConfig } = useSystemAdminStore()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [importConfigData, setImportConfigData] = useState<any[]>(configExample)
+  const { t } = useTranslation()
 
   const handleExportConfig = async () => {
     try {
@@ -37,31 +39,31 @@ export const SystemAdminDashboard: React.FC = () => {
     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '2rem 0' }}>
       <DashboardContainer>
         <Header>
-          <Title>System Admin Dashboard</Title>
+          <Title>{t('systemAdminDashboard.title')}</Title>
         </Header>
         <ActionsList>
           <ActionItem>
-            <ActionLabel>Export Configuration</ActionLabel>
+            <ActionLabel>{t('systemAdminDashboard.exportConfiguration')}</ActionLabel>
             <ExportButton onClick={handleExportConfig} disabled={isExporting}>
-              {isExporting ? 'Exporting...' : 'Export Config'}
+              {isExporting ? t('systemAdminDashboard.exporting') : t('systemAdminDashboard.exportButton')}
             </ExportButton>
             {lastExportedConfig && (
               <ConfigPreview>
-                <ConfigLabel>Last Exported Config:</ConfigLabel>
+                <ConfigLabel>{t('systemAdminDashboard.lastExportedConfig')}</ConfigLabel>
                 <pre>{JSON.stringify(lastExportedConfig, null, 2)}</pre>
               </ConfigPreview>
             )}
           </ActionItem>
           <ActionItem>
-            <ActionLabel>Import Configuration</ActionLabel>
+            <ActionLabel>{t('systemAdminDashboard.importConfiguration')}</ActionLabel>
             <ImportInput
               value={JSON.stringify(importConfigData, null, 2)}
               onChange={e => setImportConfigData(JSON.parse(e.target.value))}
-              placeholder="Paste config JSON here"
+              placeholder={t('systemAdminDashboard.pasteConfigJson')}
               disabled={isImporting}
             />
             <ImportButton onClick={handleImportConfig} disabled={isImporting}>
-              {isImporting ? 'Importing...' : 'Import Config'}
+              {isImporting ? t('systemAdminDashboard.importing') : t('systemAdminDashboard.importButton')}
             </ImportButton>
           </ActionItem>
         </ActionsList>

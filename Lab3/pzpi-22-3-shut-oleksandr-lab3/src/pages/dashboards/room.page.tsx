@@ -5,8 +5,12 @@ import styled from 'styled-components'
 import { useRoomStore } from '@store/rooms.store'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { useAuthStore } from '@store/store'
+import { useTranslation } from 'react-i18next'
+import { temperatureToDisplay } from '@utils/parsers'
 
 export const RoomPage: React.FC = () => {
+  const { t, i18n } = useTranslation()
+
   const { roomId } = useParams<{ roomId: string }>()
   const rooms = useRoomStore(state => state.rooms)
   const analyzeRoom = useRoomStore(state => state.analyzeRoom)
@@ -31,28 +35,28 @@ export const RoomPage: React.FC = () => {
   const statsData = roomAnalysis?.analysis.statistics
   const parametersStats = [
     {
-      name: 'Temperature (°C)',
-      Mean: statsData?.temperature_mean,
-      Median: statsData?.temperature_median,
-      Min: statsData?.temperature_min,
-      Max: statsData?.temperature_max,
+      name: t('roomsDashboard.temperature'),
+      Mean: temperatureToDisplay(i18n.language, statsData?.temperature_mean),
+      Median: temperatureToDisplay(i18n.language, statsData?.temperature_median),
+      Min: temperatureToDisplay(i18n.language, statsData?.temperature_min),
+      Max: temperatureToDisplay(i18n.language, statsData?.temperature_max),
     },
     {
-      name: 'Moisture (%)',
+      name: t('roomsDashboard.moisture'),
       Mean: statsData?.moisture_mean,
       Median: statsData?.moisture_median,
       Min: statsData?.moisture_min,
       Max: statsData?.moisture_max,
     },
     {
-      name: 'CO2 (ppm)',
+      name: t('roomsDashboard.co2'),
       Mean: statsData?.carbonDioxide_mean,
       Median: statsData?.carbonDioxide_median,
       Min: statsData?.carbonDioxide_min,
       Max: statsData?.carbonDioxide_max,
     },
     {
-      name: 'Illumination (lux)',
+      name: t('roomsDashboard.illumination'),
       Mean: statsData?.illumination_mean,
       Median: statsData?.illumination_median,
       Min: statsData?.illumination_min,
@@ -67,19 +71,19 @@ export const RoomPage: React.FC = () => {
           <RoomTitle>{room.roomName}</RoomTitle>
         </RoomHeader>
         <RoomDetails>
-          <Detail>Temperature: {room.temperature}°C</Detail>
-          <Detail>Moisture: {room.moisture}%</Detail>
-          <Detail>CO2: {room.carbonDioxide} ppm</Detail>
-          <Detail>Illumination: {room.illumination} lux</Detail>
+          <Detail>{t('room.temperature', { value: temperatureToDisplay(i18n.language, room.temperature) })}</Detail>
+          <Detail>{t('room.moisture', { value: room.moisture })}</Detail>
+          <Detail>{t('room.co2', { value: room.carbonDioxide })}</Detail>
+          <Detail>{t('room.illumination', { value: room.illumination })}</Detail>
         </RoomDetails>
-        <AnalyzeButton onClick={handleAnalyzeData}>Analyze</AnalyzeButton>
+        <AnalyzeButton onClick={handleAnalyzeData}>{t('room.analyzeButton')}</AnalyzeButton>
 
         {isAnalysisVisible && roomAnalysis?.analysis && (
           <AnalysisSection>
-            <SectionTitle>Analytics</SectionTitle>
+            <SectionTitle>{t('room.analyticsSection')}</SectionTitle>
 
             <ChartContainer>
-              <SectionSubtitle>Parameter Statistics</SectionSubtitle>
+              <SectionSubtitle>{t('room.parameterStats')}</SectionSubtitle>
               {parametersStats.map(param => (
                 <ChartWrapper key={param.name}>
                   <ResponsiveContainer width="100%" height={250}>
@@ -89,10 +93,10 @@ export const RoomPage: React.FC = () => {
                       <YAxis />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="Mean" fill="#4a90e2" name="Mean" />
-                      <Bar dataKey="Median" fill="#82ca9d" name="Median" />
-                      <Bar dataKey="Min" fill="#ff6f61" name="Minimum" />
-                      <Bar dataKey="Max" fill="#f1c40f" name="Maximum" />
+                      <Bar dataKey="Mean" fill="#4a90e2" name={t('room.mean')} />
+                      <Bar dataKey="Median" fill="#82ca9d" name={t('room.median')} />
+                      <Bar dataKey="Min" fill="#ff6f61" name={t('room.min')} />
+                      <Bar dataKey="Max" fill="#f1c40f" name={t('room.max')} />
                     </BarChart>
                   </ResponsiveContainer>
                 </ChartWrapper>
@@ -100,19 +104,19 @@ export const RoomPage: React.FC = () => {
             </ChartContainer>
 
             <CorrelationSection>
-              <SectionSubtitle>Correlations</SectionSubtitle>
+              <SectionSubtitle>{t('room.correlationsSection')}</SectionSubtitle>
               <CorrelationTable>
                 <thead>
                   <tr>
-                    <TableHeader>Parameter Pair</TableHeader>
-                    <TableHeader>Correlation Coefficient</TableHeader>
+                    <TableHeader>{t('room.parameterPair')}</TableHeader>
+                    <TableHeader>{t('room.correlationCoefficient')}</TableHeader>
                   </tr>
                 </thead>
                 <tbody>
                   {Object.entries(roomAnalysis.analysis.correlation).map(([pair, value]) => (
                     <TableRow key={pair}>
                       <TableCell>{pair.replace('-', ' and ')}</TableCell>
-                      <TableCell>{value !== null ? value.toFixed(2) : 'No data'}</TableCell>
+                      <TableCell>{value !== null ? value.toFixed(2) : t('room.noData')}</TableCell>
                     </TableRow>
                   ))}
                 </tbody>
@@ -120,7 +124,7 @@ export const RoomPage: React.FC = () => {
             </CorrelationSection>
 
             <TrendsSection>
-              <SectionSubtitle>Trends</SectionSubtitle>
+              <SectionSubtitle>{t('room.trendsSection')}</SectionSubtitle>
               <TrendsList>
                 {roomAnalysis.analysis.trends.map((trend, index) => (
                   <TrendItem key={index}>{trend}</TrendItem>
@@ -129,7 +133,7 @@ export const RoomPage: React.FC = () => {
             </TrendsSection>
 
             <RecommendationsSection>
-              <SectionSubtitle>Recommendations</SectionSubtitle>
+              <SectionSubtitle>{t('room.recommendationsSection')}</SectionSubtitle>
               <RecommendationsList>
                 {roomAnalysis.analysis.recommendations.map((recommendation, index) => (
                   <RecommendationItem key={index}>{recommendation}</RecommendationItem>
@@ -138,7 +142,7 @@ export const RoomPage: React.FC = () => {
             </RecommendationsSection>
 
             <RegressionSection>
-              <SectionSubtitle>Regression Analysis</SectionSubtitle>
+              <SectionSubtitle>{t('room.regressionSection')}</SectionSubtitle>
               <RegressionText>{roomAnalysis.analysis.regression}</RegressionText>
             </RegressionSection>
           </AnalysisSection>

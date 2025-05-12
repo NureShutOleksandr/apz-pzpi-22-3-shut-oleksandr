@@ -42,16 +42,16 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, mainStyle }) =
     <Container>
       <Header>
         <NavSection>
-          <Logo onClick={backToHomeNavigate}>APZ</Logo>
-          <NavItem onClick={navigateToRooms}>Rooms</NavItem>
+          <Logo onClick={backToHomeNavigate}>{t('mainLayout.logo')}</Logo>
+          <NavItem onClick={navigateToRooms}>{t('mainLayout.rooms')}</NavItem>
           {user?.roles.some(el => el.value === 'DATABASE_ADMIN') && (
-            <NavItem onClick={navigateToDbAdminDashboard}>Database admin dashboard</NavItem>
+            <NavItem onClick={navigateToDbAdminDashboard}>{t('mainLayout.dbAdminDashboard')}</NavItem>
           )}
           {user?.roles.some(el => el.value === 'SYSTEM_ADMIN') && (
-            <NavItem onClick={navigateToSystemAdminDashboard}>System admin dashboard</NavItem>
+            <NavItem onClick={navigateToSystemAdminDashboard}>{t('mainLayout.systemAdminDashboard')}</NavItem>
           )}
           {user?.roles.some(el => el.value === 'PLATFORM_ADMIN') && (
-            <NavItem onClick={navigateToPlatformAdminDashboard}>Platform admin dashboard</NavItem>
+            <NavItem onClick={navigateToPlatformAdminDashboard}>{t('mainLayout.platformAdminDashboard')}</NavItem>
           )}
         </NavSection>
         {!isAuth ? (

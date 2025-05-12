@@ -5,11 +5,13 @@ import MainLayout from '@shared/layouts/main.layout'
 import { ToastSuccess } from '@utils/toast.config'
 import { ErrorHandle } from '@utils/error-handler'
 import { useAuthStore } from '@store/store'
+import { useTranslation } from 'react-i18next'
 
 export const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const login = useAuthStore(state => state.login)
+  const { t } = useTranslation()
 
   const navigate = useNavigate()
 
@@ -28,22 +30,22 @@ export const LoginPage: React.FC = () => {
   return (
     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <LoginForm onSubmit={handleSubmit}>
-        <Title>Login</Title>
+        <Title>{t('login.title')}</Title>
         <Input
           type="text"
-          placeholder="Username"
+          placeholder={t('login.username')}
           value={username}
           onChange={e => setUsername(e.target.value)}
           required
         />
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={t('login.password')}
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <Button type="submit">Login</Button>
+        <Button type="submit">{t('login.button')}</Button>
       </LoginForm>
     </MainLayout>
   )

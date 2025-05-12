@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import MainLayout from '@shared/layouts/main.layout'
 import styled from 'styled-components'
 import { useDbAdminStore } from '@store/dbAdmin.store'
+import { useTranslation } from 'react-i18next'
 
 export const DbAdminDashboard: React.FC = () => {
+  const { t } = useTranslation()
   const { lastBackupPath, isCreatingBackup, isRestoringBackup, createBackup, restoreBackup } = useDbAdminStore()
   const [backupName, setBackupName] = useState('')
 
@@ -31,28 +33,30 @@ export const DbAdminDashboard: React.FC = () => {
     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '2rem 0' }}>
       <DashboardContainer>
         <Header>
-          <Title>Database Admin Dashboard</Title>
+          <Title>{t('dbAdminDashboard.title')}</Title>
         </Header>
         <ActionsList>
           <ActionItem>
-            <ActionLabel>Create Backup</ActionLabel>
+            <ActionLabel>{t('dbAdminDashboard.createBackup')}</ActionLabel>
             <CreateBackupButton onClick={handleCreateBackup} disabled={isCreatingBackup}>
-              {isCreatingBackup ? 'Creating...' : 'Create Backup'}
+              {isCreatingBackup ? t('dbAdminDashboard.creating') : t('dbAdminDashboard.createBackupButton')}
             </CreateBackupButton>
-            {lastBackupPath && <BackupPath>Last Backup Path: {lastBackupPath}</BackupPath>}
+            {lastBackupPath && (
+              <BackupPath>{t('dbAdminDashboard.lastBackupPath', { path: lastBackupPath })}</BackupPath>
+            )}
           </ActionItem>
           <ActionItem>
-            <ActionLabel>Restore Backup</ActionLabel>
+            <ActionLabel>{t('dbAdminDashboard.restoreBackup')}</ActionLabel>
             <InputGroup>
               <RestoreInput
                 type="text"
                 value={backupName}
                 onChange={e => setBackupName(e.target.value)}
-                placeholder="Enter backup folder name"
+                placeholder={t('dbAdminDashboard.enterBackupFolderName')}
                 disabled={isRestoringBackup}
               />
               <RestoreButton onClick={handleRestoreBackup} disabled={isRestoringBackup}>
-                {isRestoringBackup ? 'Restoring...' : 'Restore'}
+                {isRestoringBackup ? t('dbAdminDashboard.restoring') : t('dbAdminDashboard.restoreButton')}
               </RestoreButton>
             </InputGroup>
           </ActionItem>
