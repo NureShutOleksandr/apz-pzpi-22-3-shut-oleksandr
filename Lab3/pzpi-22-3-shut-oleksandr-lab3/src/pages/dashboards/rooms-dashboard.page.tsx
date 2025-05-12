@@ -46,6 +46,8 @@ export const RoomsDashboard: React.FC = () => {
   const handleSubmitRoomCreate = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (i18n.language === 'en') formData.temperature = ((formData.temperature - 32) * 5) / 9
+
     await createRoom(formData)
     handleCloseModal()
     setFormData({
