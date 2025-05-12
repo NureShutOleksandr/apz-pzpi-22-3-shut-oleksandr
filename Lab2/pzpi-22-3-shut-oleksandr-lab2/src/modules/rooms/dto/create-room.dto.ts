@@ -7,6 +7,11 @@ export class CreateRoomDto {
   @IsString()
   user: string
 
+  @ApiProperty({ example: 'Kitchen', description: 'Name of the room' })
+  @IsNotEmpty()
+  @IsString()
+  roomName: string
+
   @ApiProperty({ example: 22, description: 'Temperature' })
   @IsNotEmpty()
   @IsNumber()

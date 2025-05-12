@@ -1,29 +1,35 @@
 import React, { useState } from 'react'
 import MainLayout from '@shared/layouts/main.layout'
 import styled from 'styled-components'
-import { useDbAdminStore } from '@store/dbAdmin.store'
+import { useSystemAdminStore } from '@store/systemAdmin.store'
+import { configExample } from '@shared/consts/config-example.const'
 
-export const DbAdminDashboard: React.FC = () => {
-  const { lastBackupPath, isCreatingBackup, isRestoringBackup, createBackup, restoreBackup } = useDbAdminStore()
-  const [backupName, setBackupName] = useState('')
+export const SystemAdminDashboard: React.FC = () => {
+  const { lastExportedConfig, isExporting, isImporting, exportConfig, importConfig } = useSystemAdminStore()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [importConfigData, setImportConfigData] = useState<any[]>(configExample)
 
-  const handleCreateBackup = async () => {
+  const handleExportConfig = async () => {
     try {
-      await createBackup()
+      const blob = await exportConfig()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'climate-config.json')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
     } catch (error) {
-      console.error('Failed to create backup:', error)
+      console.error('Failed to export config:', error)
     }
   }
 
-  const handleRestoreBackup = async () => {
-    if (!backupName) {
-      alert('Please enter a backup name')
-      return
-    }
+  const handleImportConfig = async () => {
     try {
-      await restoreBackup(backupName)
+      await importConfig(importConfigData)
     } catch (error) {
-      console.error('Failed to restore backup:', error)
+      console.error('Failed to import config:', error)
     }
   }
 
@@ -31,30 +37,32 @@ export const DbAdminDashboard: React.FC = () => {
     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '2rem 0' }}>
       <DashboardContainer>
         <Header>
-          <Title>Database Admin Dashboard</Title>
+          <Title>System Admin Dashboard</Title>
         </Header>
         <ActionsList>
           <ActionItem>
-            <ActionLabel>Create Backup</ActionLabel>
-            <CreateBackupButton onClick={handleCreateBackup} disabled={isCreatingBackup}>
-              {isCreatingBackup ? 'Creating...' : 'Create Backup'}
-            </CreateBackupButton>
-            {lastBackupPath && <BackupPath>Last Backup Path: {lastBackupPath}</BackupPath>}
+            <ActionLabel>Export Configuration</ActionLabel>
+            <ExportButton onClick={handleExportConfig} disabled={isExporting}>
+              {isExporting ? 'Exporting...' : 'Export Config'}
+            </ExportButton>
+            {lastExportedConfig && (
+              <ConfigPreview>
+                <ConfigLabel>Last Exported Config:</ConfigLabel>
+                <pre>{JSON.stringify(lastExportedConfig, null, 2)}</pre>
+              </ConfigPreview>
+            )}
           </ActionItem>
           <ActionItem>
-            <ActionLabel>Restore Backup</ActionLabel>
-            <InputGroup>
-              <RestoreInput
-                type="text"
-                value={backupName}
-                onChange={e => setBackupName(e.target.value)}
-                placeholder="Enter backup folder name"
-                disabled={isRestoringBackup}
-              />
-              <RestoreButton onClick={handleRestoreBackup} disabled={isRestoringBackup}>
-                {isRestoringBackup ? 'Restoring...' : 'Restore'}
-              </RestoreButton>
-            </InputGroup>
+            <ActionLabel>Import Configuration</ActionLabel>
+            <ImportInput
+              value={JSON.stringify(importConfigData, null, 2)}
+              onChange={e => setImportConfigData(JSON.parse(e.target.value))}
+              placeholder="Paste config JSON here"
+              disabled={isImporting}
+            />
+            <ImportButton onClick={handleImportConfig} disabled={isImporting}>
+              {isImporting ? 'Importing...' : 'Import Config'}
+            </ImportButton>
           </ActionItem>
         </ActionsList>
       </DashboardContainer>
@@ -100,7 +108,7 @@ const ActionLabel = styled.h3`
   margin-bottom: 0.5rem;
 `
 
-const CreateBackupButton = styled.button`
+const ExportButton = styled.button`
   padding: 0.75rem 1.5rem;
   background-color: #4a90e2;
   color: #fff;
@@ -125,7 +133,7 @@ const CreateBackupButton = styled.button`
   }
 `
 
-const RestoreButton = styled.button`
+const ImportButton = styled.button`
   padding: 0.75rem 1.5rem;
   background-color: #2ecc71;
   color: #fff;
@@ -150,19 +158,16 @@ const RestoreButton = styled.button`
   }
 `
 
-const InputGroup = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`
-
-const RestoreInput = styled.input`
+const ImportInput = styled.textarea`
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s ease;
-  flex: 1;
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
 
   &:focus {
     border-color: #4a90e2;
@@ -178,8 +183,16 @@ const RestoreInput = styled.input`
   }
 `
 
-const BackupPath = styled.p`
+const ConfigPreview = styled.div`
   margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  overflow-x: auto;
+`
+
+const ConfigLabel = styled.p`
+  margin: 0 0 0.5rem 0;
   font-size: 0.9rem;
   color: #7f8c8d;
 `

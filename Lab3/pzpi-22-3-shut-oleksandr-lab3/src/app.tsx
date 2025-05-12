@@ -5,6 +5,6 @@ import router from './router/index.tsx'
 
 export const App: React.FC = () => {
   useAuth()
-  console.log(1)
+
   return <RouterProvider router={router} />
 }

@@ -23,6 +23,10 @@ export class RoomsService {
     return this.roomModel.find().exec()
   }
 
+  async getAllRoomsByUser(id: string): Promise<RoomDocument[]> {
+    return this.roomModel.find({ user: id }).exec()
+  }
+
   async getRoomById(id: string): Promise<RoomDocument> {
     if (!isValidObjectId(id)) {
       throw new HttpException('Invalid room ID format', HttpStatus.BAD_REQUEST)
@@ -235,7 +239,7 @@ export class RoomsService {
 
   private generateRecommendations(trends: string[]): string[] {
     const recommendations: string[] = []
-
+    console.log(trends)
     const recommendationMap: Record<string, string> = {
       'Temperature is higher than normal': 'Consider lowering the temperature for comfort.',
       'Temperature is lower than normal': 'Consider raising the temperature to ensure comfort.',
@@ -246,7 +250,7 @@ export class RoomsService {
       'Room is poorly illuminated': 'Increase lighting for better visibility.',
       'Room is over-illuminated': 'Reduce lighting to save energy and maintain comfort.',
     }
-
+    console.log(recommendationMap[trends[0]])
     trends.forEach(trend => {
       if (recommendationMap[trend]) {
         recommendations.push(recommendationMap[trend])

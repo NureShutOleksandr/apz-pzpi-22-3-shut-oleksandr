@@ -8,6 +8,7 @@ import { persist } from 'zustand/middleware'
 type AuthStoreState = {
   isAuth: boolean
   user: User | null
+  users: User[] | null
   isLoading: boolean
   setIsLoading: (isLoading: boolean) => void
   login: (credentials: { username: string; password: string }) => Promise<void>
@@ -15,6 +16,7 @@ type AuthStoreState = {
   logout: () => Promise<void>
   setIsAuth: (auth: boolean) => void
   setUser: (auth: User | null) => void
+  getUsers: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthStoreState>()(
@@ -23,7 +25,12 @@ export const useAuthStore = create<AuthStoreState>()(
       isAuth: false,
       user: null,
       isLoading: false,
+      users: null,
       setIsLoading: (isLoading: boolean) => set({ isLoading }),
+      getUsers: async () => {
+        const { data } = await $api.get('/users')
+        set({ users: data })
+      },
       login: async (credentials: { username: string; password: string }) => {
         const { data } = await $api.post('/auth/login', credentials)
         localStorage.setItem('accessToken', data.token.accessToken)

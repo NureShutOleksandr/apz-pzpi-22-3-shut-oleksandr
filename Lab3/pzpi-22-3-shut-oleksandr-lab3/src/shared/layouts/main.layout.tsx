@@ -22,10 +22,38 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, mainStyle }) =
     navigate(ROUTES.HOME)
   }
 
+  const navigateToRooms = () => {
+    navigate(ROUTES.ROOMS_DASHBOARD)
+  }
+
+  const navigateToDbAdminDashboard = () => {
+    navigate(ROUTES.DB_ADMIN_DASHBOARD)
+  }
+
+  const navigateToSystemAdminDashboard = () => {
+    navigate(ROUTES.SYSTEM_ADMIN_DASHBOARD)
+  }
+
+  const navigateToPlatformAdminDashboard = () => {
+    navigate(ROUTES.PLATFORM_ADMIN)
+  }
+
   return (
     <Container>
       <Header>
-        <Logo onClick={backToHomeNavigate}>APZ</Logo>
+        <NavSection>
+          <Logo onClick={backToHomeNavigate}>APZ</Logo>
+          <NavItem onClick={navigateToRooms}>Rooms</NavItem>
+          {user?.roles.some(el => el.value === 'DATABASE_ADMIN') && (
+            <NavItem onClick={navigateToDbAdminDashboard}>Database admin dashboard</NavItem>
+          )}
+          {user?.roles.some(el => el.value === 'SYSTEM_ADMIN') && (
+            <NavItem onClick={navigateToSystemAdminDashboard}>System admin dashboard</NavItem>
+          )}
+          {user?.roles.some(el => el.value === 'PLATFORM_ADMIN') && (
+            <NavItem onClick={navigateToPlatformAdminDashboard}>Platform admin dashboard</NavItem>
+          )}
+        </NavSection>
         {!isAuth ? (
           <AuthButtons>
             <StyledLink to="/login">{t('login')}</StyledLink>
@@ -100,6 +128,21 @@ const UserSection = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+`
+
+const NavSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`
+
+const NavItem = styled.div`
+  font-size: 1.2rem;
+  margin: 0;
+
+  &:hover {
+    cursor: pointer;
+  }
 `
 
 const Username = styled.span`

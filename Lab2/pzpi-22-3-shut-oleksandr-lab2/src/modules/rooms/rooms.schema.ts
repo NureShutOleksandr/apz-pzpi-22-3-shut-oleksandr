@@ -9,6 +9,9 @@ export class Room {
   user: Types.ObjectId
 
   @Prop({ required: true })
+  roomName: string
+
+  @Prop({ required: true })
   temperature: number
 
   @Prop({ required: true })

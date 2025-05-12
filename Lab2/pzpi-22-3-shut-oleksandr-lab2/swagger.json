@@ -626,6 +626,40 @@
         ]
       }
     },
+    "/api/rooms/all-rooms-by-user/{id}": {
+      "get": {
+        "operationId": "RoomsController_getAllRoomsByUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Room"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all rooms",
+        "tags": [
+          "rooms"
+        ]
+      }
+    },
     "/api/rooms/{id}/analyze": {
       "get": {
         "operationId": "RoomsController_analyzeRoom",
@@ -1541,6 +1575,11 @@
             "example": "userId",
             "description": "User ID"
           },
+          "roomName": {
+            "type": "string",
+            "example": "Kitchen",
+            "description": "Name of the room"
+          },
           "temperature": {
             "type": "number",
             "example": 22,
@@ -1564,6 +1603,7 @@
         },
         "required": [
           "user",
+          "roomName",
           "temperature",
           "moisture",
           "carbonDioxide",
@@ -1582,6 +1622,11 @@
             "type": "string",
             "example": "userId",
             "description": "User ID"
+          },
+          "roomName": {
+            "type": "string",
+            "example": "Kitchen",
+            "description": "Name of the room"
           },
           "temperature": {
             "type": "number",
@@ -1607,6 +1652,7 @@
         "required": [
           "id",
           "user",
+          "roomName",
           "temperature",
           "moisture",
           "carbonDioxide",

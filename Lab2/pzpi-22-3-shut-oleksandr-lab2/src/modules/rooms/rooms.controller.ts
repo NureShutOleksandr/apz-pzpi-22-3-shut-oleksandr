@@ -31,6 +31,14 @@ export class RoomsController {
     return this.roomsService.getAllRooms()
   }
 
+  @ApiOperation({ summary: 'Get all rooms' })
+  @ApiResponse({ status: 200, type: [Room] })
+  @Get('/all-rooms-by-user/:id')
+  @UseGuards(JwtAuthGuard)
+  getAllRoomsByUser(@Param('id') id: string): Promise<RoomDocument[]> {
+    return this.roomsService.getAllRoomsByUser(id)
+  }
+
   @ApiOperation({ summary: 'Analyze room data and generate recommendations' })
   @ApiResponse({ status: 200, description: 'Personalized recommendations' })
   @Get('/:id/analyze')
