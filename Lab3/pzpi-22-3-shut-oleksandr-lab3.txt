@@ -98,310 +98,319 @@
 ДОДАТОК В
 Програмний код
 
-     В.1 Підключення локалізації.
+     В.1 Математична обробка прикладних даних.
 
-     GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab3/pzpi-22-3-shut-oleksandr-lab3/src/locales/i18n.ts
+     GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab3/pzpi-22-3-shut-oleksandr-lab3/src/pages/dashboards/room.page.tsx
 
-1 import i18n from 'i18next'
-2 import { initReactI18next } from 'react-i18next'
-3 import LanguageDetector from 'i18next-browser-languagedetector'
-4
-5 import translationEN from './en/translation.json'
-6 import translationUK from './ua/translation.json'
-7
-8 const resources = {
-9   en: { translation: translationEN },
-10   ua: { translation: translationUK },
-11 }
-12
-13 i18n
-14   .use(LanguageDetector)
-15   .use(initReactI18next)
-16   .init({
-17     resources,
-18     fallbackLng: 'en',
-19     interpolation: { escapeValue: false },
-20   })
+1 import React, { useState } from 'react'
+2 import { useParams } from 'react-router-dom'
+3 import MainLayout from '@shared/layouts/main.layout'
+4 import styled from 'styled-components'
+5 import { useRoomStore } from '@store/rooms.store'
+6 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+7 import { useAuthStore } from '@store/store'
+8 import { useTranslation } from 'react-i18next'
+9 import { temperatureToDisplay } from '@utils/parsers'
+10 
+11 export const RoomPage: React.FC = () => {
+12   const { t, i18n } = useTranslation()
+13 
+14   const { roomId } = useParams<{ roomId: string }>()
+15   const rooms = useRoomStore(state => state.rooms)
+16   const analyzeRoom = useRoomStore(state => state.analyzeRoom)
+17   const roomAnalysis = useRoomStore(state => state.roomStatistic)
+18   const userId = useAuthStore(state => state.user)
+19
+20   const [isAnalysisVisible, setIsAnalysisVisible] = useState(false)
 21
-22 export default i18n
-
-
-
-
-     В.2 Конвертація величин.
-
-     GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab3/pzpi-22-3-shut-oleksandr-lab3/src/utils/parsers.ts
-
-1 export const temperatureToDisplay = (language: string, temperature: number | undefined): number | undefined => {
-2   if (typeof temperature !== 'number') return undefined
-3
-4   const converted = language === 'en' ? (temperature * 9) / 5 + 32 : temperature
-5
-6   return Math.round(converted * 10) / 10
-7 }
-
-     В.3 Адміністративна панель. Платформний адміністратор.
-
-     GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab3/pzpi-22-3-shut-oleksandr-lab3/src/pages/dashboards/platform-admin-dashboard.tsx
-
-1 import React, { useEffect, useState } from 'react'
-2 import MainLayout from '@shared/layouts/main.layout'
-3 import styled from 'styled-components'
-4 import { usePlatformAdminStore } from '@store/platformAdmin.store'
-5 import { useAuthStore } from '@store/store'
-6 import { useTranslation } from 'react-i18next'
-7
-8 export const PlatformAdminDashboard: React.FC = () => {
-9   const { roles, isLoadingRoles, isUpdatingRole, getRoles, updateUserRole } = usePlatformAdminStore()
-10   const { user: currentUser, setUser, users, getUsers } = useAuthStore()
-11   const [selectedUserId, setSelectedUserId] = useState<string>('')
-12   const [selectedRole, setSelectedRole] = useState<string>('')
-13   const [searchTerm, setSearchTerm] = useState<string>('')
-14   const { t } = useTranslation()
-15
-16   useEffect(() => {
-17     const fetchData = async () => {
-18       try {
-19         await getRoles()
-20         await getUsers()
-21       } catch (error) {
-22         console.error('Failed to fetch data:', error)
-23       }
-24     }
-25     fetchData()
-26   }, [getRoles, getUsers])
-27
-28   const handleUpdateRole = async () => {
-29     if (!selectedUserId || !selectedRole) {
-30       alert('Please select a user and a role')
-31       return
-32     }
-33     try {
-34       const updatedUser = await updateUserRole(selectedUserId, selectedRole)
-35       await getUsers()
-36       if (currentUser?._id === updatedUser._id) {
-37         setUser(updatedUser)
-38       }
-39       setSelectedUserId('')
-40       setSelectedRole('')
-41     } catch (error) {
-42       console.error('Failed to update role:', error)
-43     }
-44   }
-45
-46   const handleSelectUser = (userId: string) => {
-47     setSelectedUserId(userId)
-48   }
-49
-50   const filteredUsers = users?.filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase())) || []
-51
-52   return (
-53     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '2rem 0' }}>
-54       <DashboardContainer>
-55         <Header>
-56           <Title>{t('platformAdminDashboard.title')}</Title>
-57         </Header>
-58         <ActionsList>
-59           <ActionItem>
-60             <ActionLabel>{t('platformAdminDashboard.updateUserRole')}</ActionLabel>
-61             {isLoadingRoles ? (
-62               <LoadingText>{t('platformAdminDashboard.loadingRoles')}</LoadingText>
-63             ) : (
-64               <>
-65                 <SelectContainer>
-66                   <SelectedUserText>
-67                     {selectedUserId
-68                       ? t('platformAdminDashboard.selectedUser', {
-69                           username: users?.find(u => u._id === selectedUserId)?.username || 'Unknown',
-70                         })
-71                       : t('platformAdminDashboard.noUserSelected')}
-72                   </SelectedUserText>
-73                   <Select
-74                     value={selectedRole}
-75                     onChange={e => setSelectedRole(e.target.value)}
-76                     disabled={isUpdatingRole}
-77                   >
-78                     <option value="">{t('platformAdminDashboard.selectRole')}</option>
-79                     {roles?.map(role => (
-80                       <option key={role._id} value={role.value}>
-81                         {role.value} ({role.description})
-82                       </option>
-83                     ))}
-84                   </Select>
-85                 </SelectContainer>
-86                 <UpdateButton onClick={handleUpdateRole} disabled={isUpdatingRole}>
-87                   {isUpdatingRole ? t('platformAdminDashboard.updating') : t('platformAdminDashboard.updateRoleButton')}
-88                 </UpdateButton>
-89               </>
-90             )}
-91           </ActionItem>
-92           <ActionItem>
-93             <ActionLabel>{t('platformAdminDashboard.userList')}</ActionLabel>
-94             <SearchInput
-95               type="text"
-96               placeholder={t('platformAdminDashboard.searchUsers')}
-97               value={searchTerm}
-98               onChange={e => setSearchTerm(e.target.value)}
-99             />
-100             <UserList>
-101               {filteredUsers.map(user => (
-102                 <UserItem
-103                   key={user._id}
-104                   onClick={() => handleSelectUser(user._id)}
-105                   isSelected={user._id === selectedUserId}
-106                 >
-107                   {user.username} - {user.roles.map(r => r.value).join(', ')}
-108                 </UserItem>
-109               ))}
-110             </UserList>
-111           </ActionItem>
-112         </ActionsList>
-113       </DashboardContainer>
-114     </MainLayout>
-115   )
-116 }
-117
-118 const DashboardContainer = styled.div`
-119   width: 100%;
-120   max-width: 800px;
-121   background-color: #fff;
-122   border-radius: 12px;
-123   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-124   padding: 1.5rem;
-125 `
-126
-127 const Header = styled.div`
-128   margin-bottom: 1.5rem;
-129 `
-130
-131 const Title = styled.h2`
-132   font-size: 1.8rem;
-133   color: #333;
-134   margin: 0;
-135 `
-136
-137 const ActionsList = styled.ul`
-138   list-style: none;
-139   padding: 0;
-140 `
-141
-142 const ActionItem = styled.li`
-143   padding: 1rem;
-144   border-bottom: 1px solid #eee;
-145   &:last-child {
-146     border-bottom: none;
-147   }
-148 `
-149
-150 const ActionLabel = styled.h3`
-151   font-size: 1.2rem;
-152   color: #2c3e50;
-153   margin-bottom: 0.5rem;
-154 `
-155
-156 const SelectContainer = styled.div`
-157   display: flex;
-158   gap: 1rem;
-159   margin-bottom: 1rem;
-160   align-items: center;
-161 `
-162
-163 const SelectedUserText = styled.p`
-164   font-size: 1rem;
-165   color: #2c3e50;
-166   margin: 0;
-167 `
-168
-169 const Select = styled.select`
-170   padding: 0.75rem;
-171   border: 1px solid #ddd;
-172   border-radius: 8px;
-173   font-size: 1rem;
-174   outline: none;
-175   transition: border-color 0.3s ease;
-176   width: 100%;
-177   max-width: 300px;
-178
-179   &:focus {
-180     border-color: #4a90e2;
-181   }
-182
-183   &:disabled {
-184     background-color: #f5f5f5;
-185     cursor: not-allowed;
-186   }
-187 `
-188
-189 const UpdateButton = styled.button`
-190   padding: 0.75rem 1.5rem;
-191   background-color: #4a90e2;
-192   color: #fff;
-193   border: none;
-194   border-radius: 8px;
-195   font-weight: 500;
-196   cursor: pointer;
-197   transition: background-color 0.3s ease;
-198
-199   &:hover:not(:disabled) {
-200     background-color: #357abd;
-201   }
-202
-203   &:focus {
-204     outline: none;
-205     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
-206   }
+22   const room = rooms?.find(r => r._id.toString() === roomId)
+23
+24   const handleAnalyzeData = async () => {
+25     if (roomId) {
+26       await analyzeRoom(roomId, userId?._id)
+27       setIsAnalysisVisible(true)
+28     }
+29   }
+30
+31   if (!room) {
+32     return <MainLayout>No room found</MainLayout>
+33   }
+34
+35   const statsData = roomAnalysis?.analysis.statistics
+36   const parametersStats = [
+37     {
+38       name: t('roomsDashboard.temperature'),
+39       Mean: temperatureToDisplay(i18n.language, statsData?.temperature_mean),
+40       Median: temperatureToDisplay(i18n.language, statsData?.temperature_median),
+41       Min: temperatureToDisplay(i18n.language, statsData?.temperature_min),
+42       Max: temperatureToDisplay(i18n.language, statsData?.temperature_max),
+43     },
+44     {
+45       name: t('roomsDashboard.moisture'),
+46       Mean: statsData?.moisture_mean,
+47       Median: statsData?.moisture_median,
+48       Min: statsData?.moisture_min,
+49       Max: statsData?.moisture_max,
+50     },
+51     {
+52       name: t('roomsDashboard.co2'),
+53       Mean: statsData?.carbonDioxide_mean,
+54       Median: statsData?.carbonDioxide_median,
+55       Min: statsData?.carbonDioxide_min,
+56       Max: statsData?.carbonDioxide_max,
+57     },
+58     {
+59       name: t('roomsDashboard.illumination'),
+60       Mean: statsData?.illumination_mean,
+61       Median: statsData?.illumination_median,
+62       Min: statsData?.illumination_min,
+63       Max: statsData?.illumination_max,
+64     },
+65   ]
+66
+67   return (
+68     <MainLayout mainStyle={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '2rem 0' }}>
+69       <RoomContainer>
+70         <RoomHeader>
+71           <RoomTitle>{room.roomName}</RoomTitle>
+72         </RoomHeader>
+73         <RoomDetails>
+74           <Detail>{t('room.temperature', { value: temperatureToDisplay(i18n.language, room.temperature) })}</Detail>
+75           <Detail>{t('room.moisture', { value: room.moisture })}</Detail>
+76           <Detail>{t('room.co2', { value: room.carbonDioxide })}</Detail>
+77           <Detail>{t('room.illumination', { value: room.illumination })}</Detail>
+78         </RoomDetails>
+79         <AnalyzeButton onClick={handleAnalyzeData}>{t('room.analyzeButton')}</AnalyzeButton>
+80
+81         {isAnalysisVisible && roomAnalysis?.analysis && (
+82           <AnalysisSection>
+83             <SectionTitle>{t('room.analyticsSection')}</SectionTitle>
+84
+85             <ChartContainer>
+86               <SectionSubtitle>{t('room.parameterStats')}</SectionSubtitle>
+87               {parametersStats.map(param => (
+88                 <ChartWrapper key={param.name}>
+89                   <ResponsiveContainer width="100%" height={250}>
+90                     <BarChart data={[param]} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+91                       <CartesianGrid strokeDasharray="3 3" />
+92                       <XAxis dataKey="name" />
+93                       <YAxis />
+94                       <Tooltip />
+95                       <Legend />
+96                       <Bar dataKey="Mean" fill="#4a90e2" name={t('room.mean')} />
+97                       <Bar dataKey="Median" fill="#82ca9d" name={t('room.median')} />
+98                       <Bar dataKey="Min" fill="#ff6f61" name={t('room.min')} />
+99                       <Bar dataKey="Max" fill="#f1c40f" name={t('room.max')} />
+100                     </BarChart>
+101                   </ResponsiveContainer>
+102                 </ChartWrapper>
+103               ))}
+104             </ChartContainer>
+105
+106             <CorrelationSection>
+107               <SectionSubtitle>{t('room.correlationsSection')}</SectionSubtitle>
+108               <CorrelationTable>
+109                 <thead>
+110                   <tr>
+111                     <TableHeader>{t('room.parameterPair')}</TableHeader>
+112                     <TableHeader>{t('room.correlationCoefficient')}</TableHeader>
+113                   </tr>
+114                 </thead>
+115                 <tbody>
+116                   {Object.entries(roomAnalysis.analysis.correlation).map(([pair, value]) => (
+117                     <TableRow key={pair}>
+118                       <TableCell>{pair.replace('-', ' and ')}</TableCell>
+119                       <TableCell>{value !== null ? value.toFixed(2) : t('room.noData')}</TableCell>
+120                     </TableRow>
+121                   ))}
+122                 </tbody>
+123               </CorrelationTable>
+124             </CorrelationSection>
+125
+126             <TrendsSection>
+127               <SectionSubtitle>{t('room.trendsSection')}</SectionSubtitle>
+128               <TrendsList>
+129                 {roomAnalysis.analysis.trends.map((trend, index) => (
+130                   <TrendItem key={index}>{trend}</TrendItem>
+131                 ))}
+132               </TrendsList>
+133             </TrendsSection>
+134 
+135             <RecommendationsSection>
+136               <SectionSubtitle>{t('room.recommendationsSection')}</SectionSubtitle>
+137               <RecommendationsList>
+138                 {roomAnalysis.analysis.recommendations.map((recommendation, index) => (
+139                   <RecommendationItem key={index}>{recommendation}</RecommendationItem>
+140                 ))}
+141               </RecommendationsList>
+142             </RecommendationsSection>
+143
+144             <RegressionSection>
+145               <SectionSubtitle>{t('room.regressionSection')}</SectionSubtitle>
+146               <RegressionText>{roomAnalysis.analysis.regression}</RegressionText>
+147             </RegressionSection>
+148           </AnalysisSection>
+149         )}
+150       </RoomContainer>
+151     </MainLayout>
+152   )
+153 }
+154
+155 const RoomContainer = styled.div`
+156   width: 100%;
+157   max-width: 800px;
+158   background-color: #fff;
+159   border-radius: 12px;
+160   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+161   padding: 1.5rem;
+162 `
+163
+164 const RoomHeader = styled.div`
+165   margin-bottom: 1.5rem;
+166 `
+167
+168 const RoomTitle = styled.h2`
+169   font-size: 1.8rem;
+170   color: #333;
+171   margin: 0;
+172 `
+173
+174 const RoomDetails = styled.div`
+175   display: flex;
+176   flex-direction: column;
+177   gap: 1rem;
+178   margin-bottom: 1.5rem;
+179 `
+180
+181 const Detail = styled.p`
+182   margin: 0;
+183   font-size: 0.9rem;
+184   color: #7f8c8d;
+185 `
+186
+187 const AnalyzeButton = styled.button`
+188   padding: 0.75rem 1.5rem;
+189   background-color: #e74c3c;
+190   color: #fff;
+191   border: none;
+192   border-radius: 8px;
+193   font-weight: 500;
+194   cursor: pointer;
+195   transition: background-color 0.3s ease;
+196   margin-bottom: 1.5rem;
+197
+198   &:hover {
+199     background-color: #c0392b;
+200   }
+201
+202   &:focus {
+203     outline: none;
+204     box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.3);
+205   }
+206 `
 207
-208   &:disabled {
-209     background-color: #a3bffa;
-210     cursor: not-allowed;
-211   }
-212 `
-213
-214 const LoadingText = styled.p`
-215   font-size: 1rem;
-216   color: #7f8c8d;
-217 `
-218
-219 const SearchInput = styled.input`
-220   padding: 0.75rem;
-221   border: 1px solid #ddd;
-222   border-radius: 8px;
-223   font-size: 1rem;
-224   outline: none;
-225   transition: border-color 0.3s ease;
-226   width: 100%;
-227   margin-bottom: 1rem;
-228
-229   &:focus {
-230     border-color: #4a90e2;
-231   }
-232 `
-233
-234 const UserList = styled.ul`
-235   list-style: none;
-236   padding: 0;
-237   max-height: 200px;
-238   overflow-y: auto;
+208 const AnalysisSection = styled.div`
+209   margin-top: 2rem;
+210 `
+211
+212 const SectionTitle = styled.h3`
+213   font-size: 1.5rem;
+214   color: #333;
+215   margin-bottom: 1rem;
+216 `
+217
+218 const SectionSubtitle = styled.h4`
+219   font-size: 1.2rem;
+220   color: #2c3e50;
+221   margin-bottom: 1rem;
+222 `
+223
+224 const ChartContainer = styled.div`
+225   margin-bottom: 2rem;
+226 `
+227
+228 const ChartWrapper = styled.div`
+229   margin-bottom: 2rem;
+230 `
+231
+232 const CorrelationSection = styled.div`
+233   margin-bottom: 2rem;
+234 `
+235
+236 const CorrelationTable = styled.table`
+237   width: 100%;
+238   border-collapse: collapse;
 239 `
 240
-241 const UserItem = styled.li<{ isSelected: boolean }>`
-242   padding: 0.5rem;
-243   border-bottom: 1px solid #eee;
-244   font-size: 0.9rem;
-245   color: #2c3e50;
-246   cursor: pointer;
-247   background-color: ${props => (props.isSelected ? '#e6f0fa' : 'transparent')};
+241 const TableHeader = styled.th`
+242   padding: 0.75rem;
+243   background-color: #f5f5f5;
+244   color: #333;
+245   text-align: left;
+246   border-bottom: 1px solid #ddd;
+247 `
 248
-249   &:last-child {
-250     border-bottom: none;
-251   }
-252
-253   &:hover {
-254     background-color: #f0f0f0;
-255   }
-256 `
+249 const TableRow = styled.tr`
+250   &:nth-child(even) {
+251     background-color: #f9f9f9;
+252   }
+253 `
+254
+255 const TableCell = styled.td`
+256   padding: 0.75rem;
+257   border-bottom: 1px solid #ddd;
+258   color: #7f8c8d;
+259 `
+260
+261 const TrendsSection = styled.div`
+262   margin-bottom: 2rem;
+263 `
+264
+265 const TrendsList = styled.ul`
+266   list-style: none;
+267   padding: 0;
+268 `
+269
+270 const TrendItem = styled.li`
+271   padding: 0.5rem 0;
+272   color: #2c3e50;
+273   &:before {
+274     content: '• ';
+275     color: #4a90e2;
+276   }
+277 `
+278
+279 const RecommendationsSection = styled.div`
+280   margin-bottom: 2rem;
+281 `
+282
+283 const RecommendationsList = styled.ul`
+284   list-style: none;
+285   padding: 0;
+286 `
+287
+288 const RecommendationItem = styled.li`
+289   padding: 0.5rem 0;
+290   color: #2c3e50;
+291   &:before {
+292     content: '✔ ';
+293     color: #27ae60;
+294   }
+295 `
+296
+297 const RegressionSection = styled.div`
+298   margin-bottom: 2rem;
+299 `
+300
+301 const RegressionText = styled.p`
+302   color: #7f8c8d;
+303   font-style: italic;
+304 `
 
-     В.4 Адміністративна панель. Системний адміністратор.
+
+
+
+     В.2 Адміністрування бізнес-логіки системи.
 
      GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab3/pzpi-22-3-shut-oleksandr-lab3/src/pages/dashboards/system-admin-dashboard.page.tsx
 
@@ -581,7 +590,7 @@
 174   &:focus {
 175     border-color: #4a90e2;
 176   }
-177 
+177
 178   &:disabled {
 179     background-color: #f5f5f5;
 180     cursor: not-allowed;
@@ -606,7 +615,7 @@
 199   color: #7f8c8d;
 200 `
 
-     В.5 Адміністративна панель. Адміністратор баз даних
+     В.3 Резервне копіювання користувацьких даних
 
      GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab3/pzpi-22-3-shut-oleksandr-lab3/src/pages/dashboards/db-admin-dashboard.page.tsx
 
@@ -799,5 +808,4 @@
 187   font-size: 0.9rem;
 188   color: #7f8c8d;
 189 `
-
 
