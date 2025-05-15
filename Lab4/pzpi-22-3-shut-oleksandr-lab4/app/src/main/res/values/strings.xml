@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">APZ</string>
+    <string name="welcome_title">Welcome to MyApp</string>
+    <string name="description">Explore our rooms and manage your account with ease.</string>
+    <string name="rooms_button">View Rooms</string>
+    <string name="login_button">Login</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="logout">Logout</string>
+</resources>

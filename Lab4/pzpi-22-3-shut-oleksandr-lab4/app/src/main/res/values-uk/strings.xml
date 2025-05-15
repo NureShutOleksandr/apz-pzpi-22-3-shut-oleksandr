@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">APZ</string>
+    <string name="welcome_title">Ласкаво просимо до Мій Додаток</string>
+    <string name="description">Досліджуйте наші кімнати та керуйте своїм обліковим записом з легкістю.</string>
+    <string name="rooms_button">Переглянути Кімнати</string>
+    <string name="login_button">Увійти</string>
+    <string name="login">Увійти</string>
+    <string name="sign_up">Зареєструватися</string>
+    <string name="logout">Вийти</string>
+</resources>
