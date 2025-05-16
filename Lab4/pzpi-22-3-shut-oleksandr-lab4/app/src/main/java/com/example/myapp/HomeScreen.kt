@@ -37,9 +37,7 @@ fun HomeScreen() {
           .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(
-          16
-
-            .dp
+          16.dp
         )
       ) {
         Text(

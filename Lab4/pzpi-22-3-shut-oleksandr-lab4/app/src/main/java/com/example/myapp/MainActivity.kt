@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapp.api.RetrofitClient
+import com.example.myapp.data.CreateUserDto
 import java.util.*
 
 private const val TAG = "MyApp"
@@ -25,16 +27,16 @@ private const val PREFS_NAME = "MyAppPrefs"
 private const val KEY_LANGUAGE = "language"
 private const val KEY_IS_AUTH = "is_auth"
 private const val KEY_USERNAME = "username"
+private const val KEY_ACCESS_TOKEN = "access_token"
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
-    // Завантажуємо збережену мову та стан автентифікації
     val sharedPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     val savedLanguage = sharedPrefs.getString(KEY_LANGUAGE, "UA") ?: "UA"
     val isAuth = sharedPrefs.getBoolean(KEY_IS_AUTH, false)
     val username = sharedPrefs.getString(KEY_USERNAME, null)
+    val accessToken = sharedPrefs.getString(KEY_ACCESS_TOKEN, null)
 
-    // Встановлюємо Locale
     val locale = if (savedLanguage == "UA") Locale("uk") else Locale("en")
     Locale.setDefault(locale)
     val config = Configuration().apply {
@@ -51,6 +53,7 @@ class MainActivity : ComponentActivity() {
       var language by remember { mutableStateOf(savedLanguage) }
       var authState by remember { mutableStateOf(isAuth) }
       var currentUsername by remember { mutableStateOf(username) }
+      var currentAccessToken by remember { mutableStateOf(accessToken) }
 
       val navController = rememberNavController()
 
@@ -93,10 +96,12 @@ class MainActivity : ComponentActivity() {
                 with(sharedPrefs.edit()) {
                   putBoolean(KEY_IS_AUTH, false)
                   putString(KEY_USERNAME, null)
+                  putString(KEY_ACCESS_TOKEN, null)
                   apply()
                 }
                 authState = false
                 currentUsername = null
+                currentAccessToken = null
               }
             ) {
               HomeScreen()
@@ -105,18 +110,37 @@ class MainActivity : ComponentActivity() {
           composable("login") {
             LoginScreen(
               onLogin = { username, password ->
-                // Тимчасова логіка: логін успішний, якщо пароль "test"
-                val success = password == "test"
-                if (success) {
-                  with(sharedPrefs.edit()) {
-                    putBoolean(KEY_IS_AUTH, true)
-                    putString(KEY_USERNAME, username)
-                    apply()
+                try {
+                  val response = RetrofitClient.apiService.login(
+                    CreateUserDto(username, password)
+                  )
+                  if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    if (loginResponse != null) {
+                      val token = loginResponse.token.accessToken
+                      with(sharedPrefs.edit()) {
+                        putBoolean(KEY_IS_AUTH, true)
+                        putString(KEY_USERNAME, username)
+                        putString(KEY_ACCESS_TOKEN, token)
+                        apply()
+                      }
+                      authState = true
+                      currentUsername = username
+                      currentAccessToken = token
+                      Log.d(TAG, "Login successful, token: $token")
+                      true
+                    } else {
+                      Log.d(TAG, "Login failed: response body is null")
+                      false
+                    }
+                  } else {
+                    Log.d(TAG, "Login failed: ${response.code()} - ${response.message()}")
+                    false
                   }
-                  authState = true
-                  currentUsername = username
+                } catch (e: Exception) {
+                  Log.e(TAG, "Login error: ${e.message}", e)
+                  false
                 }
-                success
               },
               onNavigateBack = { navController.popBackStack() }
             )
@@ -124,7 +148,6 @@ class MainActivity : ComponentActivity() {
           composable("signup") {
             SignUpScreen(
               onSignUp = { username, password, confirmPassword ->
-                // Тимчасова логіка: реєстрація успішна, якщо паролі збігаються
                 val success = password == confirmPassword && password.isNotEmpty()
                 if (success) {
                   with(sharedPrefs.edit()) {
