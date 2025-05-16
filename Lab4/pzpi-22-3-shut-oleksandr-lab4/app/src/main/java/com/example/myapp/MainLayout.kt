@@ -21,11 +21,13 @@ import androidx.compose.material3.TopAppBar
 fun MainLayout(
   currentLanguage: String,
   onLanguageChanged: (String) -> Unit,
+  isAuth: Boolean,
+  username: String?,
+  onLoginClick: () -> Unit,
+  onSignUpClick: () -> Unit,
+  onLogoutClick: () -> Unit,
   content: @Composable () -> Unit
 ) {
-  var isAuth by remember { mutableStateOf(false) }
-  var username by remember { mutableStateOf<String?>(null) }
-
   Scaffold(
     topBar = {
       TopAppBar(
@@ -54,10 +56,7 @@ fun MainLayout(
                 )
               }
               Button(
-                onClick = {
-                  isAuth = false
-                  username = null
-                },
+                onClick = onLogoutClick,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFff5252)),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.padding(8.dp)
@@ -73,19 +72,16 @@ fun MainLayout(
                 text = stringResource(R.string.login),
                 color = Color.White,
                 modifier = Modifier
-                    .clickable {
-                        isAuth = true
-                        username = "TestUser"
-                    }
-                    .padding(8.dp),
+                  .clickable { onLoginClick() }
+                  .padding(8.dp),
                 fontSize = 16.sp
               )
               Text(
                 text = stringResource(R.string.sign_up),
                 color = Color.White,
                 modifier = Modifier
-                    .clickable { /* Поки нічого */ }
-                    .padding(8.dp),
+                  .clickable { onSignUpClick() }
+                  .padding(8.dp),
                 fontSize = 16.sp
               )
             }
@@ -104,9 +100,9 @@ fun MainLayout(
     content = { padding ->
       Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFf5f5f5))
-            .padding(padding)
+          .fillMaxSize()
+          .background(Color(0xFFf5f5f5))
+          .padding(padding)
       ) {
         content()
       }

@@ -16,8 +16,6 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeScreen() {
-  var isAuth by remember { mutableStateOf(false) }
-
   Box(
     modifier = Modifier
       .fillMaxSize()
@@ -38,7 +36,11 @@ fun HomeScreen() {
           .padding(32.dp)
           .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(
+          16
+
+            .dp
+        )
       ) {
         Text(
           text = stringResource(R.string.welcome_title),
@@ -67,19 +69,6 @@ fun HomeScreen() {
               color = Color.White,
               fontWeight = FontWeight.Medium
             )
-          }
-          if (!isAuth) {
-            Button(
-              onClick = { isAuth = true }, // Тимчасово "логінить"
-              colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4a90e2)),
-              shape = RoundedCornerShape(8.dp)
-            ) {
-              Text(
-                text = stringResource(R.string.login_button),
-                color = Color.White,
-                fontWeight = FontWeight.Medium
-              )
-            }
           }
         }
       }

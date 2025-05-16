@@ -8,4 +8,14 @@
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
     <string name="logout">Logout</string>
+    <string name="login_title" translatable="false">Login</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_success">Login successful</string>
+    <string name="login_error">Login failed</string>
+    <string name="signup_title">Sign Up</string>
+    <string name="signup_password_confirm">Confirm Password</string>
+    <string name="signup_button">Sign Up</string>
+    <string name="signup_success">Sign up successful</string>
+    <string name="signup_error">Sign up failed</string>
 </resources>

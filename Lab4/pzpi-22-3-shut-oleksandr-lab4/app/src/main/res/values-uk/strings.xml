@@ -8,4 +8,14 @@
     <string name="login">Увійти</string>
     <string name="sign_up">Зареєструватися</string>
     <string name="logout">Вийти</string>
+    <string name="login_title">Увійти</string>
+    <string name="login_username">Ім’я користувача</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_success">Успішний вхід</string>
+    <string name="login_error">Помилка входу</string>
+    <string name="signup_title">Зареєструватися</string>
+    <string name="signup_password_confirm">Підтвердити пароль</string>
+    <string name="signup_button">Зареєструватися</string>
+    <string name="signup_success">Успішна реєстрація</string>
+    <string name="signup_error">Помилка реєстрації</string>
 </resources>
