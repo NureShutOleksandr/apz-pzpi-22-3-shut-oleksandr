@@ -148,17 +148,41 @@ class MainActivity : ComponentActivity() {
           composable("signup") {
             SignUpScreen(
               onSignUp = { username, password, confirmPassword ->
-                val success = password == confirmPassword && password.isNotEmpty()
-                if (success) {
-                  with(sharedPrefs.edit()) {
-                    putBoolean(KEY_IS_AUTH, true)
-                    putString(KEY_USERNAME, username)
-                    apply()
+                try {
+                  if (password != confirmPassword) {
+                    Log.d(TAG, "Signup failed: passwords do not match")
+                    return@SignUpScreen false
                   }
-                  authState = true
-                  currentUsername = username
+                  val response = RetrofitClient.apiService.register(
+                    CreateUserDto(username, password)
+                  )
+                  if (response.isSuccessful) {
+                    val registerResponse = response.body()
+                    if (registerResponse != null) {
+                      val token = registerResponse.token.accessToken
+                      with(sharedPrefs.edit()) {
+                        putBoolean(KEY_IS_AUTH, true)
+                        putString(KEY_USERNAME, username)
+                        putString(KEY_ACCESS_TOKEN, token)
+                        apply()
+                      }
+                      authState = true
+                      currentUsername = username
+                      currentAccessToken = token
+                      Log.d(TAG, "Signup successful, token: $token")
+                      true
+                    } else {
+                      Log.d(TAG, "Signup failed: response body is null")
+                      false
+                    }
+                  } else {
+                    Log.d(TAG, "Signup failed: ${response.code()} - ${response.message()}")
+                    false
+                  }
+                } catch (e: Exception) {
+                  Log.e(TAG, "Signup error: ${e.message}", e)
+                  false
                 }
-                success
               },
               onNavigateBack = { navController.popBackStack() }
             )
