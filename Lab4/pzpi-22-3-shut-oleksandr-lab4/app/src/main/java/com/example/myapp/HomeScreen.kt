@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.myapp.data.Room
 import java.util.Locale
 
@@ -28,7 +29,9 @@ fun HomeScreen(
   rooms: List<Room>?,
   onRoomClick: (String) -> Unit,
   onCreateRoom: (String, Double, Double, Double, Double) -> Unit,
-  onDeleteRoom: (String) -> Unit
+  onDeleteRoom: (String) -> Unit,
+  navController: NavController,
+  isAdmin: Boolean
 ) {
   val context = LocalContext.current
   val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -152,6 +155,37 @@ fun HomeScreen(
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
           )
+        }
+      }
+    }
+
+    // Кнопка адміна (якщо роль DATABASE_ADMIN)
+    if (isAdmin) {
+      item {
+        Surface(
+          modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+          shape = RoundedCornerShape(12.dp),
+          shadowElevation = 6.dp,
+          color = Color(0xFF3498db)
+        ) {
+          Button(
+            onClick = { navController.navigate("dbAdmin") },
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+              containerColor = Color(0xFF3498db),
+              contentColor = Color.White
+            )
+          ) {
+            Text(
+              text = stringResource(R.string.admin),
+              fontSize = 18.sp,
+              fontWeight = FontWeight.Bold
+            )
+          }
         }
       }
     }

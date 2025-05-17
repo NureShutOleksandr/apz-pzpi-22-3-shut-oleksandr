@@ -34,6 +34,7 @@ private const val KEY_IS_AUTH = "is_auth"
 private const val KEY_USERNAME = "username"
 private const val KEY_ACCESS_TOKEN = "access_token"
 private const val KEY_USER_ID = "user_id"
+private const val KEY_ROLE = "role"
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
     val username = sharedPrefs.getString(KEY_USERNAME, null)
     val accessToken = sharedPrefs.getString(KEY_ACCESS_TOKEN, null)
     val userId = sharedPrefs.getString(KEY_USER_ID, null)
+    val role = sharedPrefs.getString(KEY_ROLE, null)
 
     val locale = if (savedLanguage == "UA") Locale("uk") else Locale("en")
     Locale.setDefault(locale)
@@ -63,25 +65,29 @@ class MainActivity : ComponentActivity() {
       var currentAccessToken by remember { mutableStateOf(accessToken) }
       var currentUserId by remember { mutableStateOf(userId) }
       var rooms by remember { mutableStateOf<List<Room>?>(null) }
+      var currentRole by remember { mutableStateOf(role) }
 
       LaunchedEffect(currentAccessToken) {
         updateAccessToken(currentAccessToken)
       }
 
-      // Отримуємо userId після логіну чи при зміні authState
+      // Отримуємо userId та роль після логіну
       LaunchedEffect(authState, currentUsername) {
-        if (authState && currentUsername != null && currentUserId == null) {
+        if (currentUsername != null) {
           try {
             val response = RetrofitClient.apiService.findUserByUsername(currentUsername!!)
             if (response.isSuccessful) {
               val userResponse = response.body()
               if (userResponse != null) {
                 currentUserId = userResponse._id
+                currentRole =
+                  userResponse.roles[0].value
                 with(sharedPrefs.edit()) {
                   putString(KEY_USER_ID, userResponse._id)
+                  putString(KEY_ROLE, userResponse.roles[0].value)
                   apply()
                 }
-                Log.d(TAG, "User ID loaded: ${userResponse._id}")
+                Log.d(TAG, "User ID loaded: ${userResponse._id}, Role: ${userResponse.roles[0].value}")
               } else {
                 Log.d(TAG, "User response body is null")
               }
@@ -227,7 +233,8 @@ class MainActivity : ComponentActivity() {
                 currentUsername = null
                 currentAccessToken = null
                 rooms = null
-                updateAccessToken(null) // Очищаємо токен при виході
+                currentRole = null
+                updateAccessToken(null)
               }
             ) {
               HomeScreen(
@@ -236,7 +243,9 @@ class MainActivity : ComponentActivity() {
                   navController.navigate("room/$roomId")
                 },
                 onCreateRoom = onCreateRoom,
-                onDeleteRoom = onDeleteRoom
+                onDeleteRoom = onDeleteRoom,
+                navController = navController,
+                isAdmin = currentRole == "DATABASE_ADMIN"
               )
             }
           }
@@ -303,7 +312,7 @@ class MainActivity : ComponentActivity() {
                       authState = true
                       currentUsername = username
                       currentAccessToken = token
-                      updateAccessToken(token) // Оновлюємо токен у RetrofitClient
+                      updateAccessToken(token)
                       Log.d(TAG, "Signup successful, token: $token")
                       true
                     } else {
@@ -335,6 +344,9 @@ class MainActivity : ComponentActivity() {
               onAnalyze = onAnalyze,
               onNavigateBack = { navController.popBackStack() }
             )
+          }
+          composable("dbAdmin") {
+            DbAdminScreen(navController = navController)
           }
         }
       }

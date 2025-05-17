@@ -1,6 +1,8 @@
 package com.example.myapp.api
 
 import UserResponse
+import com.example.myapp.data.BackupCreateRes
+import com.example.myapp.data.BackupRestoreRes
 import com.example.myapp.data.CreateRoomDto
 import com.example.myapp.data.CreateUserDto
 import com.example.myapp.data.LoginResponse
@@ -34,4 +36,10 @@ interface ApiService {
 
   @DELETE("rooms/{roomId}")
   suspend fun deleteRoom(@Path("roomId") roomId: String): Response<Void>
+
+  @POST("backup/create")
+  suspend fun createBackup(): Response<BackupCreateRes>
+
+  @POST("backup/restore")
+  suspend fun restoreBackup(@Body body: Map<String, String>): Response<BackupRestoreRes>
 }

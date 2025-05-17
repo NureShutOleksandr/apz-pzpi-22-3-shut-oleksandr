@@ -52,4 +52,14 @@
     <string name="create">Створити</string>
     <string name="delete">Видалити</string>
     <string name="cancel">Скасувати</string>
+    <string name="admin">Адмін</string>
+    <string name="dbAdminDashboard.title">Адміністрування бази даних</string>
+    <string name="dbAdminDashboard.createBackup">Створити резервну копію</string>
+    <string name="dbAdminDashboard.createBackupButton">Створити резервну копію</string>
+    <string name="dbAdminDashboard.creating">Створення...</string>
+    <string name="dbAdminDashboard.lastBackupPath">Остання резервна копія: %s</string>
+    <string name="dbAdminDashboard.restoreBackup">Відновити резервну копію</string>
+    <string name="dbAdminDashboard.enterBackupFolderName">Введіть назву папки резервної копії</string>
+    <string name="dbAdminDashboard.restoreButton">Відновити</string>
+    <string name="dbAdminDashboard.restoring">Відновлення...</string>
 </resources>
