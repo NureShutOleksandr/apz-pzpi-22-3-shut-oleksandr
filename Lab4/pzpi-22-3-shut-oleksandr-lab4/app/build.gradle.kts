@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -76,4 +77,6 @@ dependencies {
   implementation("com.google.code.gson:gson:2.11.0")
   // Charts
   implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
+  // JSON
+  implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }

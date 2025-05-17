@@ -32,6 +32,7 @@ fun HomeScreen(
   onDeleteRoom: (String) -> Unit,
   navController: NavController,
   isDatabaseAdmin: Boolean,
+  isSystemAdmin: Boolean,
   isAuth: Boolean,
   onRoomsUpdated: () -> Unit
 ) {
@@ -163,7 +164,7 @@ fun HomeScreen(
       }
     }
 
-    // Кнопка адміна (якщо роль DATABASE_ADMIN)
+    // Кнопка адміна бази даних (якщо роль DATABASE_ADMIN)
     if (isDatabaseAdmin) {
       item {
         Surface(
@@ -186,6 +187,37 @@ fun HomeScreen(
           ) {
             Text(
               text = stringResource(R.string.database_admin_screen),
+              fontSize = 18.sp,
+              fontWeight = FontWeight.Bold
+            )
+          }
+        }
+      }
+    }
+
+    // Кнопка системного адміна (якщо роль SYSTEM_ADMIN)
+    if (isSystemAdmin) {
+      item {
+        Surface(
+          modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+          shape = RoundedCornerShape(12.dp),
+          shadowElevation = 6.dp,
+          color = Color(0xFFe67e22)
+        ) {
+          Button(
+            onClick = { navController.navigate("systemAdmin") },
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+              containerColor = Color(0xFFe67e22),
+              contentColor = Color.White
+            )
+          ) {
+            Text(
+              text = stringResource(R.string.systemAdmin),
               fontSize = 18.sp,
               fontWeight = FontWeight.Bold
             )

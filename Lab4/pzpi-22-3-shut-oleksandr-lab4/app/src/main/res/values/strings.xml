@@ -62,4 +62,14 @@
     <string name="dbAdminDashboard.enterBackupFolderName">Enter backup folder name</string>
     <string name="dbAdminDashboard.restoreButton">Restore</string>
     <string name="dbAdminDashboard.restoring">Restoring...</string>
+    <string name="systemAdmin">System Admin</string>
+    <string name="systemAdminDashboard.title">System Administration</string>
+    <string name="systemAdminDashboard.exportConfiguration">Export Configuration</string>
+    <string name="systemAdminDashboard.exportButton">Export</string>
+    <string name="systemAdminDashboard.exporting">Exporting...</string>
+    <string name="systemAdminDashboard.lastExportedConfig">Last Exported Config:</string>
+    <string name="systemAdminDashboard.importConfiguration">Import Configuration</string>
+    <string name="systemAdminDashboard.pasteConfigJson">Paste config JSON here</string>
+    <string name="systemAdminDashboard.importButton">Import</string>
+    <string name="systemAdminDashboard.importing">Importing...</string>
 </resources>

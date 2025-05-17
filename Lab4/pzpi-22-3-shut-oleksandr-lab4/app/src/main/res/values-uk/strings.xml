@@ -62,4 +62,14 @@
     <string name="dbAdminDashboard.enterBackupFolderName">Введіть назву папки резервної копії</string>
     <string name="dbAdminDashboard.restoreButton">Відновити</string>
     <string name="dbAdminDashboard.restoring">Відновлення...</string>
+    <string name="systemAdmin">Системний адмін</string>
+    <string name="systemAdminDashboard.title">Системне адміністрування</string>
+    <string name="systemAdminDashboard.exportConfiguration">Експортувати конфігурацію</string>
+    <string name="systemAdminDashboard.exportButton">Експортувати</string>
+    <string name="systemAdminDashboard.exporting">Експортування...</string>
+    <string name="systemAdminDashboard.lastExportedConfig">Остання експортована конфігурація:</string>
+    <string name="systemAdminDashboard.importConfiguration">Імпортувати конфігурацію</string>
+    <string name="systemAdminDashboard.pasteConfigJson">Вставте JSON конфігурації тут</string>
+    <string name="systemAdminDashboard.importButton">Імпортувати</string>
+    <string name="systemAdminDashboard.importing">Імпортування...</string>
 </resources>

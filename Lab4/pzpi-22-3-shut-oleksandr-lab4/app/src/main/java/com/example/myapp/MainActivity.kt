@@ -265,6 +265,7 @@ class MainActivity : ComponentActivity() {
                 onDeleteRoom = onDeleteRoom,
                 navController = navController,
                 isDatabaseAdmin = currentRole == "DATABASE_ADMIN",
+                isSystemAdmin = currentRole == "SYSTEM_ADMIN",
                 onRoomsUpdated = refreshRooms,
                 isAuth = authState
               )
@@ -371,6 +372,9 @@ class MainActivity : ComponentActivity() {
               navController = navController,
               onRoomsUpdated = refreshRooms
             )
+          }
+          composable("systemAdmin") {
+            SystemAdminScreen(navController = navController)
           }
         }
       }

@@ -3,8 +3,10 @@ package com.example.myapp.api
 import UserResponse
 import com.example.myapp.data.BackupCreateRes
 import com.example.myapp.data.BackupRestoreRes
+import com.example.myapp.data.ConfigRule
 import com.example.myapp.data.CreateRoomDto
 import com.example.myapp.data.CreateUserDto
+import com.example.myapp.data.ImportConfigRes
 import com.example.myapp.data.LoginResponse
 import com.example.myapp.data.Room
 import com.example.myapp.data.RoomAnalysis
@@ -42,4 +44,10 @@ interface ApiService {
 
   @POST("backup/restore")
   suspend fun restoreBackup(@Body body: Map<String, String>): Response<BackupRestoreRes>
+
+  @GET("config/export")
+  suspend fun exportConfig(): Response<List<ConfigRule>>
+
+  @POST("config/import")
+  suspend fun importConfig(@Body config: List<ConfigRule>): Response<ImportConfigRes>
 }
