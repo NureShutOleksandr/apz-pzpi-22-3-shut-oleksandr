@@ -7,14 +7,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,14 +27,96 @@ import java.util.Locale
 fun HomeScreen(
   rooms: List<Room>?,
   onRoomClick: (String) -> Unit,
-  onCreateRoom: (String) -> Unit, // Нова функція для створення кімнати
-  onDeleteRoom: (String) -> Unit // Нова функція для видалення кімнати
+  onCreateRoom: (String, Double, Double, Double, Double) -> Unit,
+  onDeleteRoom: (String) -> Unit
 ) {
   val context = LocalContext.current
   val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
     context.resources.configuration.locales[0]
   } else {
     context.resources.configuration.locale
+  }
+
+  var showDialog by remember { mutableStateOf(false) }
+  var roomName by remember { mutableStateOf("") }
+  var temperature by remember { mutableStateOf("") }
+  var moisture by remember { mutableStateOf("") }
+  var carbonDioxide by remember { mutableStateOf("") }
+  var illumination by remember { mutableStateOf("") }
+
+  if (showDialog) {
+    AlertDialog(
+      onDismissRequest = { showDialog = false },
+      title = { Text(text = "Create New Room") },
+      text = {
+        Column {
+          OutlinedTextField(
+            value = roomName,
+            onValueChange = { roomName = it },
+            label = { Text("Room Name") },
+            modifier = Modifier.fillMaxWidth()
+          )
+          Spacer(modifier = Modifier.height(8.dp))
+          OutlinedTextField(
+            value = temperature,
+            onValueChange = { temperature = it },
+            label = { Text("Temperature (°C)") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            modifier = Modifier.fillMaxWidth()
+          )
+          Spacer(modifier = Modifier.height(8.dp))
+          OutlinedTextField(
+            value = moisture,
+            onValueChange = { moisture = it },
+            label = { Text("Moisture (%)") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            modifier = Modifier.fillMaxWidth()
+          )
+          Spacer(modifier = Modifier.height(8.dp))
+          OutlinedTextField(
+            value = carbonDioxide,
+            onValueChange = { carbonDioxide = it },
+            label = { Text("CO2 (ppm)") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            modifier = Modifier.fillMaxWidth()
+          )
+          Spacer(modifier = Modifier.height(8.dp))
+          OutlinedTextField(
+            value = illumination,
+            onValueChange = { illumination = it },
+            label = { Text("Illumination (lux)") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            modifier = Modifier.fillMaxWidth()
+          )
+        }
+      },
+      confirmButton = {
+        TextButton(
+          onClick = {
+            val temp = temperature.toDoubleOrNull() ?: 0.0
+            val moist = moisture.toDoubleOrNull() ?: 0.0
+            val co2 = carbonDioxide.toDoubleOrNull() ?: 0.0
+            val illum = illumination.toDoubleOrNull() ?: 0.0
+            if (roomName.isNotBlank()) {
+              onCreateRoom(roomName, temp, moist, co2, illum)
+              showDialog = false
+              roomName = ""
+              temperature = ""
+              moisture = ""
+              carbonDioxide = ""
+              illumination = ""
+            }
+          }
+        ) {
+          Text("Create")
+        }
+      },
+      dismissButton = {
+        TextButton(onClick = { showDialog = false }) {
+          Text("Cancel")
+        }
+      }
+    )
   }
 
   LazyColumn(
@@ -54,10 +138,7 @@ fun HomeScreen(
         color = Color(0xFF2c3e50)
       ) {
         Button(
-          onClick = {
-            // Викликаємо функцію створення кімнати з назвою за замовчуванням
-            onCreateRoom("New Room")
-          },
+          onClick = { showDialog = true },
           modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -121,7 +202,7 @@ fun HomeScreen(
         )
       }
     } else {
-      items(rooms) { room ->
+      items(rooms.reversed()) { room ->
         Surface(
           modifier = Modifier
             .fillMaxWidth()

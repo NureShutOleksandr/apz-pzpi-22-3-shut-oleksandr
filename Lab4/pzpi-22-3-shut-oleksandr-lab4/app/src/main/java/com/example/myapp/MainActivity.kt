@@ -131,7 +131,7 @@ class MainActivity : ComponentActivity() {
       }
 
       // Функція для створення кімнати
-      val onCreateRoom: (String) -> Unit = { roomName ->
+      val onCreateRoom: (String, Double, Double, Double, Double) -> Unit = { roomName, temp, moist, co2, illum ->
         coroutineScope.launch {
           if (currentUserId == null) {
             Log.e(TAG, "Cannot create room: userId is null")
@@ -141,10 +141,10 @@ class MainActivity : ComponentActivity() {
             val roomData = CreateRoomDto(
               user = currentUserId!!,
               roomName = roomName,
-              temperature = 0.0,
-              moisture = 0.0,
-              carbonDioxide = 0.0,
-              illumination = 0.0
+              temperature = temp,
+              moisture = moist,
+              carbonDioxide = co2,
+              illumination = illum
             )
             val response = RetrofitClient.apiService.createRoom(roomData)
             if (response.isSuccessful) {
