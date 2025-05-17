@@ -31,7 +31,8 @@ fun HomeScreen(
   onCreateRoom: (String, Double, Double, Double, Double) -> Unit,
   onDeleteRoom: (String) -> Unit,
   navController: NavController,
-  isAdmin: Boolean,
+  isDatabaseAdmin: Boolean,
+  isAuth: Boolean,
   onRoomsUpdated: () -> Unit
 ) {
   val context = LocalContext.current
@@ -132,36 +133,38 @@ fun HomeScreen(
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     // Кнопка створення кімнати
-    item {
-      Surface(
-        modifier = Modifier
-          .fillMaxWidth()
-          .wrapContentHeight(),
-        shape = RoundedCornerShape(12.dp),
-        shadowElevation = 6.dp,
-        color = Color(0xFF2c3e50)
-      ) {
-        Button(
-          onClick = { showDialog = true },
+    if (isAuth) {
+      item {
+        Surface(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-          colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF2c3e50),
-            contentColor = Color.White
-          )
+            .wrapContentHeight(),
+          shape = RoundedCornerShape(12.dp),
+          shadowElevation = 6.dp,
+          color = Color(0xFF2c3e50)
         ) {
-          Text(
-            text = stringResource(R.string.create_room),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-          )
+          Button(
+            onClick = { showDialog = true },
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+              containerColor = Color(0xFF2c3e50),
+              contentColor = Color.White
+            )
+          ) {
+            Text(
+              text = stringResource(R.string.create_room),
+              fontSize = 18.sp,
+              fontWeight = FontWeight.Bold
+            )
+          }
         }
       }
     }
 
     // Кнопка адміна (якщо роль DATABASE_ADMIN)
-    if (isAdmin) {
+    if (isDatabaseAdmin) {
       item {
         Surface(
           modifier = Modifier

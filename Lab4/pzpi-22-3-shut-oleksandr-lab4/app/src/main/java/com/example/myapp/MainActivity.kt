@@ -264,8 +264,9 @@ class MainActivity : ComponentActivity() {
                 onCreateRoom = onCreateRoom,
                 onDeleteRoom = onDeleteRoom,
                 navController = navController,
-                isAdmin = currentRole == "DATABASE_ADMIN",
-                onRoomsUpdated = refreshRooms
+                isDatabaseAdmin = currentRole == "DATABASE_ADMIN",
+                onRoomsUpdated = refreshRooms,
+                isAuth = authState
               )
             }
           }
