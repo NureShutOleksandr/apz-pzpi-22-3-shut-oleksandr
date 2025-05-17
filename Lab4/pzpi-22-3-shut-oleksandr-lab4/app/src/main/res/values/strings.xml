@@ -42,5 +42,5 @@
     <string name="room_moisture">Humidity: %1$s%%</string>
     <string name="room_co2">CO₂ Level: %1$s ppm</string>
     <string name="room_illumination">Illumination: %1$s lux</string>
-
+    <string name="create_room">Create Room</string>
 </resources>

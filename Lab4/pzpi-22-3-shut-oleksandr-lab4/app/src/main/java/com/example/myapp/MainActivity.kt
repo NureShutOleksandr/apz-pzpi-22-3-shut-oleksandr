@@ -20,10 +20,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapp.api.RetrofitClient
 import com.example.myapp.data.CreateUserDto
+import com.example.myapp.data.CreateRoomDto
 import com.example.myapp.data.Room
 import com.example.myapp.data.RoomAnalysis
 import java.util.*
 import com.example.myapp.api.RetrofitClient.updateAccessToken
+import kotlinx.coroutines.launch
 
 private const val TAG = "MyApp"
 private const val PREFS_NAME = "MyAppPrefs"
@@ -110,6 +112,7 @@ class MainActivity : ComponentActivity() {
       }
 
       val navController = rememberNavController()
+      val coroutineScope = rememberCoroutineScope()
 
       // Функція для аналізу кімнати
       val onAnalyze: suspend (String) -> RoomAnalysis? = { roomId ->
@@ -124,6 +127,57 @@ class MainActivity : ComponentActivity() {
         } catch (e: Exception) {
           Log.e(TAG, "Error analyzing room: ${e.message}", e)
           null
+        }
+      }
+
+      // Функція для створення кімнати
+      val onCreateRoom: (String) -> Unit = { roomName ->
+        coroutineScope.launch {
+          if (currentUserId == null) {
+            Log.e(TAG, "Cannot create room: userId is null")
+            return@launch
+          }
+          try {
+            val roomData = CreateRoomDto(
+              user = currentUserId!!,
+              roomName = roomName,
+              temperature = 0.0,
+              moisture = 0.0,
+              carbonDioxide = 0.0,
+              illumination = 0.0
+            )
+            val response = RetrofitClient.apiService.createRoom(roomData)
+            if (response.isSuccessful) {
+              val newRoom = response.body()
+              if (newRoom != null) {
+                rooms = rooms?.plus(newRoom) ?: listOf(newRoom)
+                Log.d(TAG, "Room created: ${newRoom.roomName}")
+              } else {
+                Log.e(TAG, "Failed to create room: response body is null")
+              }
+            } else {
+              Log.e(TAG, "Failed to create room: ${response.code()} - ${response.message()}")
+            }
+          } catch (e: Exception) {
+            Log.e(TAG, "Error creating room: ${e.message}", e)
+          }
+        }
+      }
+
+      // Функція для видалення кімнати
+      val onDeleteRoom: (String) -> Unit = { roomId ->
+        coroutineScope.launch {
+          try {
+            val response = RetrofitClient.apiService.deleteRoom(roomId)
+            if (response.isSuccessful) {
+              rooms = rooms?.filter { it._id != roomId }
+              Log.d(TAG, "Room deleted: $roomId")
+            } else {
+              Log.e(TAG, "Failed to delete room: ${response.code()} - ${response.message()}")
+            }
+          } catch (e: Exception) {
+            Log.e(TAG, "Error deleting room: ${e.message}", e)
+          }
         }
       }
 
@@ -180,7 +234,9 @@ class MainActivity : ComponentActivity() {
                 rooms = rooms,
                 onRoomClick = { roomId ->
                   navController.navigate("room/$roomId")
-                }
+                },
+                onCreateRoom = onCreateRoom,
+                onDeleteRoom = onDeleteRoom
               )
             }
           }

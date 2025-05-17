@@ -24,7 +24,9 @@ import java.util.Locale
 @Composable
 fun HomeScreen(
   rooms: List<Room>?,
-  onRoomClick: (String) -> Unit
+  onRoomClick: (String) -> Unit,
+  onCreateRoom: (String) -> Unit, // Нова функція для створення кімнати
+  onDeleteRoom: (String) -> Unit // Нова функція для видалення кімнати
 ) {
   val context = LocalContext.current
   val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -41,6 +43,39 @@ fun HomeScreen(
     verticalArrangement = Arrangement.spacedBy(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
+    // Кнопка створення кімнати
+    item {
+      Surface(
+        modifier = Modifier
+          .fillMaxWidth()
+          .wrapContentHeight(),
+        shape = RoundedCornerShape(12.dp),
+        shadowElevation = 6.dp,
+        color = Color(0xFF2c3e50)
+      ) {
+        Button(
+          onClick = {
+            // Викликаємо функцію створення кімнати з назвою за замовчуванням
+            onCreateRoom("New Room")
+          },
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+          colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF2c3e50),
+            contentColor = Color.White
+          )
+        ) {
+          Text(
+            text = "Create Room",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+          )
+        }
+      }
+    }
+
+    // Привітальна секція
     item {
       Surface(
         modifier = Modifier
@@ -75,6 +110,7 @@ fun HomeScreen(
       }
     }
 
+    // Список кімнат
     if (rooms.isNullOrEmpty()) {
       item {
         Text(
@@ -94,41 +130,61 @@ fun HomeScreen(
           shadowElevation = 4.dp,
           color = Color.White
         ) {
-          Column(
+          Row(
             modifier = Modifier
               .padding(16.dp)
               .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
           ) {
-            Text(
-              text = room.roomName,
-              fontSize = 20.sp,
-              fontWeight = FontWeight.Bold,
-              color = Color(0xFF1e1e1e)
-            )
-            Text(
-              text = stringResource(
-                R.string.room_temperature,
-                convertTemperatureIfNeeded(room.temperature, locale)
+            Column(
+              modifier = Modifier.weight(1f),
+              verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              Text(
+                text = room.roomName,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1e1e1e)
+              )
+              Text(
+                text = stringResource(
+                  R.string.room_temperature,
+                  convertTemperatureIfNeeded(room.temperature, locale)
+                ),
+                fontSize = 16.sp,
+                color = Color(0xFF7f8c8d)
+              )
+              Text(
+                text = stringResource(R.string.room_moisture, room.moisture),
+                fontSize = 16.sp,
+                color = Color(0xFF7f8c8d)
+              )
+              Text(
+                text = stringResource(R.string.room_co2, room.carbonDioxide),
+                fontSize = 16.sp,
+                color = Color(0xFF7f8c8d)
+              )
+              Text(
+                text = stringResource(R.string.room_illumination, room.illumination),
+                fontSize = 16.sp,
+                color = Color(0xFF7f8c8d)
+              )
+            }
+            // Кнопка видалення
+            Button(
+              onClick = { onDeleteRoom(room._id) },
+              colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFe74c3c),
+                contentColor = Color.White
               ),
-              fontSize = 16.sp,
-              color = Color(0xFF7f8c8d)
-            )
-            Text(
-              text = stringResource(R.string.room_moisture, room.moisture),
-              fontSize = 16.sp,
-              color = Color(0xFF7f8c8d)
-            )
-            Text(
-              text = stringResource(R.string.room_co2, room.carbonDioxide),
-              fontSize = 16.sp,
-              color = Color(0xFF7f8c8d)
-            )
-            Text(
-              text = stringResource(R.string.room_illumination, room.illumination),
-              fontSize = 16.sp,
-              color = Color(0xFF7f8c8d)
-            )
+              modifier = Modifier.padding(start = 8.dp)
+            ) {
+              Text(
+                text = "Delete",
+                fontSize = 14.sp
+              )
+            }
           }
         }
       }

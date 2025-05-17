@@ -42,4 +42,5 @@
     <string name="room_moisture">Вологість: %1$s%%</string>
     <string name="room_co2">Рівень CO₂: %1$s ppm</string>
     <string name="room_illumination">Освітлення: %1$s lux</string>
+    <string name="create_room">Створити кімнату</string>
 </resources>
