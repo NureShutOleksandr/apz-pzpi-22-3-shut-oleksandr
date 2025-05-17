@@ -20,7 +20,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapp.api.RetrofitClient
 import com.example.myapp.data.CreateUserDto
+import com.example.myapp.data.Room
+import com.example.myapp.data.RoomAnalysis
 import java.util.*
+import com.example.myapp.api.RetrofitClient.updateAccessToken
 
 private const val TAG = "MyApp"
 private const val PREFS_NAME = "MyAppPrefs"
@@ -28,6 +31,7 @@ private const val KEY_LANGUAGE = "language"
 private const val KEY_IS_AUTH = "is_auth"
 private const val KEY_USERNAME = "username"
 private const val KEY_ACCESS_TOKEN = "access_token"
+private const val KEY_USER_ID = "user_id"
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +40,7 @@ class MainActivity : ComponentActivity() {
     val isAuth = sharedPrefs.getBoolean(KEY_IS_AUTH, false)
     val username = sharedPrefs.getString(KEY_USERNAME, null)
     val accessToken = sharedPrefs.getString(KEY_ACCESS_TOKEN, null)
+    val userId = sharedPrefs.getString(KEY_USER_ID, null)
 
     val locale = if (savedLanguage == "UA") Locale("uk") else Locale("en")
     Locale.setDefault(locale)
@@ -54,8 +59,73 @@ class MainActivity : ComponentActivity() {
       var authState by remember { mutableStateOf(isAuth) }
       var currentUsername by remember { mutableStateOf(username) }
       var currentAccessToken by remember { mutableStateOf(accessToken) }
+      var currentUserId by remember { mutableStateOf(userId) }
+      var rooms by remember { mutableStateOf<List<Room>?>(null) }
+
+      LaunchedEffect(currentAccessToken) {
+        updateAccessToken(currentAccessToken)
+      }
+
+      // Отримуємо userId після логіну чи при зміні authState
+      LaunchedEffect(authState, currentUsername) {
+        if (authState && currentUsername != null && currentUserId == null) {
+          try {
+            val response = RetrofitClient.apiService.findUserByUsername(currentUsername!!)
+            if (response.isSuccessful) {
+              val userResponse = response.body()
+              if (userResponse != null) {
+                currentUserId = userResponse._id
+                with(sharedPrefs.edit()) {
+                  putString(KEY_USER_ID, userResponse._id)
+                  apply()
+                }
+                Log.d(TAG, "User ID loaded: ${userResponse._id}")
+              } else {
+                Log.d(TAG, "User response body is null")
+              }
+            } else {
+              Log.d(TAG, "Failed to find user: ${response.code()} - ${response.message()}")
+            }
+          } catch (e: Exception) {
+            Log.e(TAG, "Error finding user: ${e.message}", e)
+          }
+        }
+      }
+
+      // Завантажуємо кімнати
+      LaunchedEffect(authState, currentUserId) {
+        if (authState && currentUserId != null) {
+          try {
+            val response = RetrofitClient.apiService.getRooms(currentUserId!!)
+            if (response.isSuccessful) {
+              rooms = response.body()
+              Log.d(TAG, "Rooms loaded: ${rooms?.size}")
+            } else {
+              Log.d(TAG, "Failed to load rooms: ${response.code()} - ${response.message()}")
+            }
+          } catch (e: Exception) {
+            Log.e(TAG, "Error loading rooms: ${e.message}", e)
+          }
+        }
+      }
 
       val navController = rememberNavController()
+
+      // Функція для аналізу кімнати
+      val onAnalyze: suspend (String) -> RoomAnalysis? = { roomId ->
+        try {
+          val response = RetrofitClient.apiService.analyzeRoom(roomId)
+          if (response.isSuccessful) {
+            response.body()
+          } else {
+            Log.e(TAG, "Failed to analyze room: ${response.code()} - ${response.message()}")
+            null
+          }
+        } catch (e: Exception) {
+          Log.e(TAG, "Error analyzing room: ${e.message}", e)
+          null
+        }
+      }
 
       MyAppTheme {
         NavHost(
@@ -102,9 +172,16 @@ class MainActivity : ComponentActivity() {
                 authState = false
                 currentUsername = null
                 currentAccessToken = null
+                rooms = null
+                updateAccessToken(null) // Очищаємо токен при виході
               }
             ) {
-              HomeScreen()
+              HomeScreen(
+                rooms = rooms,
+                onRoomClick = { roomId ->
+                  navController.navigate("room/$roomId")
+                }
+              )
             }
           }
           composable("login") {
@@ -127,6 +204,7 @@ class MainActivity : ComponentActivity() {
                       authState = true
                       currentUsername = username
                       currentAccessToken = token
+                      updateAccessToken(token)
                       Log.d(TAG, "Login successful, token: $token")
                       true
                     } else {
@@ -169,6 +247,7 @@ class MainActivity : ComponentActivity() {
                       authState = true
                       currentUsername = username
                       currentAccessToken = token
+                      updateAccessToken(token) // Оновлюємо токен у RetrofitClient
                       Log.d(TAG, "Signup successful, token: $token")
                       true
                     } else {
@@ -184,6 +263,20 @@ class MainActivity : ComponentActivity() {
                   false
                 }
               },
+              onNavigateBack = { navController.popBackStack() }
+            )
+          }
+          composable("room/{roomId}") { backStackEntry ->
+            val roomId = backStackEntry.arguments?.getString("roomId") ?: return@composable
+            val room = rooms?.find { it._id == roomId }
+            if (room == null) {
+              Log.e(TAG, "Room with id $roomId not found")
+              navController.popBackStack()
+              return@composable
+            }
+            RoomScreen(
+              room = room,
+              onAnalyze = onAnalyze,
               onNavigateBack = { navController.popBackStack() }
             )
           }

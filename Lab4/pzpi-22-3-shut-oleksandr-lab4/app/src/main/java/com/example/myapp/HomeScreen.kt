@@ -1,6 +1,7 @@
 package com.example.myapp
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -13,59 +14,109 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import com.example.myapp.data.Room
 
 @Composable
-fun HomeScreen() {
-  Box(
+fun HomeScreen(
+  rooms: List<Room>?,
+  onRoomClick: (String) -> Unit
+) {
+  LazyColumn(
     modifier = Modifier
       .fillMaxSize()
       .background(Color(0xFFf5f5f5))
       .padding(16.dp),
-    contentAlignment = Alignment.Center
+    verticalArrangement = Arrangement.spacedBy(16.dp),
+    horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    Surface(
-      modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight(),
-      shape = RoundedCornerShape(12.dp),
-      shadowElevation = 6.dp,
-      color = Color.White
-    ) {
-      Column(
+    // Привітальна секція
+    item {
+      Surface(
         modifier = Modifier
-          .padding(32.dp)
-          .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(
-          16.dp
-        )
+          .fillMaxWidth()
+          .wrapContentHeight(),
+        shape = RoundedCornerShape(12.dp),
+        shadowElevation = 6.dp,
+        color = Color.White
       ) {
+        Column(
+          modifier = Modifier
+            .padding(32.dp)
+            .fillMaxWidth(),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+          Text(
+            text = stringResource(R.string.welcome_title),
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF2c3e50),
+            textAlign = TextAlign.Center
+          )
+          Text(
+            text = stringResource(R.string.description),
+            fontSize = 16.sp,
+            color = Color(0xFF7f8c8d),
+            textAlign = TextAlign.Center,
+            lineHeight = 24.sp
+          )
+        }
+      }
+    }
+
+    // Список кімнат
+    if (rooms.isNullOrEmpty()) {
+      item {
         Text(
-          text = stringResource(R.string.welcome_title),
-          fontSize = 32.sp,
-          fontWeight = FontWeight.Bold,
-          color = Color(0xFF2c3e50),
+          text = stringResource(R.string.no_rooms_available),
+          fontSize = 18.sp,
+          color = Color(0xFF1e1e1e),
           textAlign = TextAlign.Center
         )
-        Text(
-          text = stringResource(R.string.description),
-          fontSize = 16.sp,
-          color = Color(0xFF7f8c8d),
-          textAlign = TextAlign.Center,
-          lineHeight = 24.sp
-        )
-        Row(
-          horizontalArrangement = Arrangement.spacedBy(16.dp)
+      }
+    } else {
+      items(rooms) { room ->
+        Surface(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onRoomClick(room._id) },
+          shape = RoundedCornerShape(8.dp),
+          shadowElevation = 4.dp,
+          color = Color.White
         ) {
-          Button(
-            onClick = { /* Поки нічого не робить */ },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4a90e2)),
-            shape = RoundedCornerShape(8.dp)
+          Column(
+            modifier = Modifier
+              .padding(16.dp)
+              .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             Text(
-              text = stringResource(R.string.rooms_button),
-              color = Color.White,
-              fontWeight = FontWeight.Medium
+              text = room.roomName,
+              fontSize = 20.sp,
+              fontWeight = FontWeight.Bold,
+              color = Color(0xFF1e1e1e)
+            )
+            Text(
+              text = stringResource(R.string.room_temperature, room.temperature),
+              fontSize = 16.sp,
+              color = Color(0xFF7f8c8d)
+            )
+            Text(
+              text = stringResource(R.string.room_moisture, room.moisture),
+              fontSize = 16.sp,
+              color = Color(0xFF7f8c8d)
+            )
+            Text(
+              text = stringResource(R.string.room_co2, room.carbonDioxide),
+              fontSize = 16.sp,
+              color = Color(0xFF7f8c8d)
+            )
+            Text(
+              text = stringResource(R.string.room_illumination, room.illumination),
+              fontSize = 16.sp,
+              color = Color(0xFF7f8c8d)
             )
           }
         }

@@ -74,4 +74,6 @@ dependencies {
   implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
   // Gson
   implementation("com.google.code.gson:gson:2.11.0")
+  // Charts
+  implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
 }
