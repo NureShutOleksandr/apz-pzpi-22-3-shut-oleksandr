@@ -72,4 +72,14 @@
     <string name="systemAdminDashboard.pasteConfigJson">Paste config JSON here</string>
     <string name="systemAdminDashboard.importButton">Import</string>
     <string name="systemAdminDashboard.importing">Importing...</string>
+    <string name="platformAdminDashboard_title">Platform Admin Dashboard</string>
+    <string name="platformAdminDashboard_updateUserRole">Update User Role</string>
+    <string name="platformAdminDashboard_loadingRoles">Loading roles...</string>
+    <string name="platformAdminDashboard_selectedUser">Selected User: %s</string>
+    <string name="platformAdminDashboard_noUserSelected">No user selected</string>
+    <string name="platformAdminDashboard_selectRole">Select Role</string>
+    <string name="platformAdminDashboard_updateRoleButton">Update Role</string>
+    <string name="platformAdminDashboard_updating">Updating...</string>
+    <string name="platformAdminDashboard_userList">User List</string>
+    <string name="platformAdminDashboard_searchUsers">Search Users</string>
 </resources>

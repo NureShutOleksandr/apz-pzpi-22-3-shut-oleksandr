@@ -33,6 +33,7 @@ fun HomeScreen(
   navController: NavController,
   isDatabaseAdmin: Boolean,
   isSystemAdmin: Boolean,
+  isPlatformAdmin: Boolean,
   isAuth: Boolean,
   onRoomsUpdated: () -> Unit
 ) {
@@ -218,6 +219,37 @@ fun HomeScreen(
           ) {
             Text(
               text = stringResource(R.string.systemAdmin),
+              fontSize = 18.sp,
+              fontWeight = FontWeight.Bold
+            )
+          }
+        }
+      }
+    }
+
+    // Кнопка платформеного адміна (якщо роль PLATFORM_ADMIN)
+    if (isPlatformAdmin) {
+      item {
+        Surface(
+          modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+          shape = RoundedCornerShape(12.dp),
+          shadowElevation = 6.dp,
+          color = Color(0xFF9b59b6)
+        ) {
+          Button(
+            onClick = { navController.navigate("platformAdmin") },
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+              containerColor = Color(0xFF9b59b6),
+              contentColor = Color.White
+            )
+          ) {
+            Text(
+              text = stringResource(R.string.platformAdminDashboard_title),
               fontSize = 18.sp,
               fontWeight = FontWeight.Bold
             )

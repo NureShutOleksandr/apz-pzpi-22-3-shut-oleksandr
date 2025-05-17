@@ -72,4 +72,14 @@
     <string name="systemAdminDashboard.pasteConfigJson">Вставте JSON конфігурації тут</string>
     <string name="systemAdminDashboard.importButton">Імпортувати</string>
     <string name="systemAdminDashboard.importing">Імпортування...</string>
+    <string name="platformAdminDashboard_title">Панель платформеного адміністратора</string>
+    <string name="platformAdminDashboard_updateUserRole">Оновити роль користувача</string>
+    <string name="platformAdminDashboard_loadingRoles">Завантаження ролей...</string>
+    <string name="platformAdminDashboard_selectedUser">Обраний користувач: %s</string>
+    <string name="platformAdminDashboard_noUserSelected">Користувача не обрано</string>
+    <string name="platformAdminDashboard_selectRole">Обрати роль</string>
+    <string name="platformAdminDashboard_updateRoleButton">Оновити роль</string>
+    <string name="platformAdminDashboard_updating">Оновлення...</string>
+    <string name="platformAdminDashboard_userList">Список користувачів</string>
+    <string name="platformAdminDashboard_searchUsers">Пошук користувачів</string>
 </resources>

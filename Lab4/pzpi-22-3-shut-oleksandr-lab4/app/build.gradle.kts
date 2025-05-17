@@ -79,4 +79,5 @@ dependencies {
   implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
   // JSON
   implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+  implementation ("androidx.compose.material:material-icons-extended:1.7.8")
 }

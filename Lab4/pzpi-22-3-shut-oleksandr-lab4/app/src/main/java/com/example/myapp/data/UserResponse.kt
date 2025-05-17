@@ -1,3 +1,5 @@
+package com.example.myapp.data
+
 data class UserResponse(
   val _id: String,
   val username: String,

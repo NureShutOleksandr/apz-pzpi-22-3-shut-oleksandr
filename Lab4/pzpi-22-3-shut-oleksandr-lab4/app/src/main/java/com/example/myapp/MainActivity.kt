@@ -266,8 +266,9 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 isDatabaseAdmin = currentRole == "DATABASE_ADMIN",
                 isSystemAdmin = currentRole == "SYSTEM_ADMIN",
-                onRoomsUpdated = refreshRooms,
-                isAuth = authState
+                isPlatformAdmin = currentRole == "PLATFORM_ADMIN",
+                isAuth = authState,
+                onRoomsUpdated = refreshRooms
               )
             }
           }
@@ -375,6 +376,9 @@ class MainActivity : ComponentActivity() {
           }
           composable("systemAdmin") {
             SystemAdminScreen(navController = navController)
+          }
+          composable("platformAdmin") {
+            PlatformAdminScreen(navController = navController)
           }
         }
       }
