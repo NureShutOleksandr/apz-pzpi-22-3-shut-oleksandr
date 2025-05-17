@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.foundation.rememberScrollState
 import com.example.myapp.api.RetrofitClient
 import com.example.myapp.data.ConfigRule
 import com.example.myapp.data.ImportConfigRes
@@ -167,15 +169,21 @@ fun SystemAdminScreen(navController: NavController) {
             color = Color(0xFF7f8c8d),
             modifier = Modifier.padding(top = 8.dp)
           )
-          Text(
-            text = Json.encodeToString(lastExportedConfig),
-            fontSize = 12.sp,
-            color = Color(0xFF2c3e50),
+          val scrollState = rememberScrollState()
+          Column(
             modifier = Modifier
               .background(Color(0xFFf9f9f9))
               .padding(8.dp)
               .fillMaxWidth()
-          )
+              .heightIn(max = 200.dp)
+              .verticalScroll(scrollState)
+          ) {
+            Text(
+              text = Json.encodeToString(lastExportedConfig),
+              fontSize = 12.sp,
+              color = Color(0xFF2c3e50)
+            )
+          }
         }
       }
     }

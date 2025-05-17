@@ -3,7 +3,7 @@
     "condition": ">",
     "message": "Temperature is higher than normal",
     "parameter": "temperature_mean",
-    "value": 25
+    "value": 26
   },
   {
     "condition": "<",
