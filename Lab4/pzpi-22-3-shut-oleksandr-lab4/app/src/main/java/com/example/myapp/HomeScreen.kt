@@ -31,7 +31,8 @@ fun HomeScreen(
   onCreateRoom: (String, Double, Double, Double, Double) -> Unit,
   onDeleteRoom: (String) -> Unit,
   navController: NavController,
-  isAdmin: Boolean
+  isAdmin: Boolean,
+  onRoomsUpdated: () -> Unit
 ) {
   val context = LocalContext.current
   val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

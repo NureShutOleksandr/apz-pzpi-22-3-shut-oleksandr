@@ -64,8 +64,8 @@ class MainActivity : ComponentActivity() {
       var currentUsername by remember { mutableStateOf(username) }
       var currentAccessToken by remember { mutableStateOf(accessToken) }
       var currentUserId by remember { mutableStateOf(userId) }
-      var rooms by remember { mutableStateOf<List<Room>?>(null) }
       var currentRole by remember { mutableStateOf(role) }
+      var rooms by remember { mutableStateOf<List<Room>?>(null) }
 
       LaunchedEffect(currentAccessToken) {
         updateAccessToken(currentAccessToken)
@@ -80,8 +80,7 @@ class MainActivity : ComponentActivity() {
               val userResponse = response.body()
               if (userResponse != null) {
                 currentUserId = userResponse._id
-                currentRole =
-                  userResponse.roles[0].value
+                currentRole = userResponse.roles[0].value
                 with(sharedPrefs.edit()) {
                   putString(KEY_USER_ID, userResponse._id)
                   putString(KEY_ROLE, userResponse.roles[0].value)
@@ -119,6 +118,25 @@ class MainActivity : ComponentActivity() {
 
       val navController = rememberNavController()
       val coroutineScope = rememberCoroutineScope()
+
+      // Функція для оновлення кімнат
+      val refreshRooms: () -> Unit = {
+        coroutineScope.launch {
+          if (authState && currentUserId != null) {
+            try {
+              val response = RetrofitClient.apiService.getRooms(currentUserId!!)
+              if (response.isSuccessful) {
+                rooms = response.body()
+                Log.d(TAG, "Rooms refreshed: ${rooms?.size}")
+              } else {
+                Log.e(TAG, "Failed to refresh rooms: ${response.code()} - ${response.message()}")
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error refreshing rooms: ${e.message}", e)
+            }
+          }
+        }
+      }
 
       // Функція для аналізу кімнати
       val onAnalyze: suspend (String) -> RoomAnalysis? = { roomId ->
@@ -227,13 +245,14 @@ class MainActivity : ComponentActivity() {
                   putBoolean(KEY_IS_AUTH, false)
                   putString(KEY_USERNAME, null)
                   putString(KEY_ACCESS_TOKEN, null)
+                  putString(KEY_ROLE, null)
                   apply()
                 }
                 authState = false
                 currentUsername = null
                 currentAccessToken = null
-                rooms = null
                 currentRole = null
+                rooms = null
                 updateAccessToken(null)
               }
             ) {
@@ -245,7 +264,8 @@ class MainActivity : ComponentActivity() {
                 onCreateRoom = onCreateRoom,
                 onDeleteRoom = onDeleteRoom,
                 navController = navController,
-                isAdmin = currentRole == "DATABASE_ADMIN"
+                isAdmin = currentRole == "DATABASE_ADMIN",
+                onRoomsUpdated = refreshRooms
               )
             }
           }
@@ -346,7 +366,10 @@ class MainActivity : ComponentActivity() {
             )
           }
           composable("dbAdmin") {
-            DbAdminScreen(navController = navController)
+            DbAdminScreen(
+              navController = navController,
+              onRoomsUpdated = refreshRooms
+            )
           }
         }
       }

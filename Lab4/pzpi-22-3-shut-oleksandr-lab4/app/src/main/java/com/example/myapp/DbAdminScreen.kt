@@ -21,7 +21,10 @@ import com.example.myapp.api.RetrofitClient
 import kotlinx.coroutines.launch
 
 @Composable
-fun DbAdminScreen(navController: NavController) {
+fun DbAdminScreen(
+  navController: NavController,
+  onRoomsUpdated: () -> Unit
+) {
   val coroutineScope = rememberCoroutineScope()
   var lastBackupPath by remember { mutableStateOf<String?>(null) }
   var isCreatingBackup by remember { mutableStateOf(false) }
@@ -63,6 +66,7 @@ fun DbAdminScreen(navController: NavController) {
         val data = response.body()
         if (data?.success == true) {
           Log.d("DbAdmin", "Restore successful")
+          onRoomsUpdated()
         } else {
           Log.e("DbAdmin", "Restore failed: ${data?.message}")
         }
@@ -118,7 +122,9 @@ fun DbAdminScreen(navController: NavController) {
           )
         ) {
           Text(
-            text = if (isCreatingBackup) stringResource(R.string.dbAdminDashboard_creating) else stringResource(R.string.dbAdminDashboard_createBackupButton),
+            text = if (isCreatingBackup) stringResource(R.string.dbAdminDashboard_creating) else stringResource(
+              R.string.dbAdminDashboard_createBackupButton
+            ),
             fontSize = 16.sp
           )
         }
@@ -170,7 +176,9 @@ fun DbAdminScreen(navController: NavController) {
             )
           ) {
             Text(
-              text = if (isRestoringBackup) stringResource(R.string.dbAdminDashboard_restoring) else stringResource(R.string.dbAdminDashboard_restoreButton),
+              text = if (isRestoringBackup) stringResource(R.string.dbAdminDashboard_restoring) else stringResource(
+                R.string.dbAdminDashboard_restoreButton
+              ),
               fontSize = 16.sp
             )
           }
