@@ -52,7 +52,7 @@
     <string name="create">Створити</string>
     <string name="delete">Видалити</string>
     <string name="cancel">Скасувати</string>
-    <string name="admin">Адмін</string>
+    <string name="database.admin.screen">Екран адміністратора баз даних</string>
     <string name="dbAdminDashboard.title">Адміністрування бази даних</string>
     <string name="dbAdminDashboard.createBackup">Створити резервну копію</string>
     <string name="dbAdminDashboard.createBackupButton">Створити резервну копію</string>

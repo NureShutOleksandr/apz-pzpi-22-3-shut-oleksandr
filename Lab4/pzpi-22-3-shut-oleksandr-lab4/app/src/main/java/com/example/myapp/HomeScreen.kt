@@ -185,7 +185,7 @@ fun HomeScreen(
             )
           ) {
             Text(
-              text = stringResource(R.string.admin),
+              text = stringResource(R.string.database_admin_screen),
               fontSize = 18.sp,
               fontWeight = FontWeight.Bold
             )

@@ -52,7 +52,7 @@
     <string name="create">Create</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
-    <string name="admin">Admin</string>
+    <string name="database.admin.screen">Database admin screen</string>
     <string name="dbAdminDashboard.title">Database Administration</string>
     <string name="dbAdminDashboard.createBackup">Create Backup</string>
     <string name="dbAdminDashboard.createBackupButton">Create Backup</string>
