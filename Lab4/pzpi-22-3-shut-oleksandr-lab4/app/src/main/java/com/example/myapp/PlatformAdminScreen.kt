@@ -25,9 +25,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapp.api.RetrofitClient
 import com.example.myapp.data.Role
+import com.example.myapp.data.UpdateUserRoleRequest
 import com.example.myapp.data.UserResponse
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlatformAdminScreen(navController: NavController) {
   val coroutineScope = rememberCoroutineScope()
@@ -48,7 +50,10 @@ fun PlatformAdminScreen(navController: NavController) {
         roles = rolesResponse.body()
         Log.d("PlatformAdmin", "Roles loaded: ${roles?.size}")
       } else {
-        Log.e("PlatformAdmin", "Failed to load roles: ${rolesResponse.code()} - ${rolesResponse.message()}")
+        Log.e(
+          "PlatformAdmin",
+          "Failed to load roles: ${rolesResponse.code()} - ${rolesResponse.message()}"
+        )
       }
     } catch (e: Exception) {
       Log.e("PlatformAdmin", "Error loading roles: ${e.message}", e)
@@ -62,7 +67,10 @@ fun PlatformAdminScreen(navController: NavController) {
         users = usersResponse.body()
         Log.d("PlatformAdmin", "Users loaded: ${users?.size}")
       } else {
-        Log.e("PlatformAdmin", "Failed to load users: ${usersResponse.code()} - ${usersResponse.message()}")
+        Log.e(
+          "PlatformAdmin",
+          "Failed to load users: ${usersResponse.code()} - ${usersResponse.message()}"
+        )
       }
     } catch (e: Exception) {
       Log.e("PlatformAdmin", "Error loading users: ${e.message}", e)
@@ -77,20 +85,25 @@ fun PlatformAdminScreen(navController: NavController) {
       coroutineScope.launch {
         isUpdatingRole = true
         try {
-          val response = RetrofitClient.apiService.updateUserRole(selectedUserId!!, selectedRole!!)
+          val request = UpdateUserRoleRequest(
+            user_id = selectedUserId!!,
+
+            role_name = selectedRole!!
+          )
+          val response = RetrofitClient.apiService.updateUserRole(request)
           if (response.isSuccessful) {
             val updatedUser = response.body()
             if (updatedUser != null) {
               users = users?.map { if (it._id == updatedUser._id) updatedUser else it }
               Log.d("PlatformAdmin", "User role updated: ${updatedUser.username}")
             } else {
-              Log.e("PlatformAdmin", "Failed to update user role: response body is null")
+              Log.e("PlatformAdmin", "Response body is null")
             }
           } else {
-            Log.e("PlatformAdmin", "Failed to update user role: ${response.code()} - ${response.message()}")
+            Log.e("PlatformAdmin", "Update failed: ${response.code()} - ${response.message()}")
           }
         } catch (e: Exception) {
-          Log.e("PlatformAdmin", "Error updating user role: ${e.message}", e)
+          Log.e("PlatformAdmin", "Network error: ${e.message}", e)
         } finally {
           isUpdatingRole = false
           selectedUserId = null
@@ -99,6 +112,7 @@ fun PlatformAdminScreen(navController: NavController) {
       }
     }
   }
+
 
   // Фільтруємо користувачів за пошуковим терміном
   val filteredUsers = users?.filter { user ->
@@ -165,44 +179,45 @@ fun PlatformAdminScreen(navController: NavController) {
               modifier = Modifier.weight(1f)
             )
 
-            Box(modifier = Modifier.weight(1f)) {
+
+            var expanded by remember { mutableStateOf(false) }
+
+            ExposedDropdownMenuBox(
+              expanded = expanded,
+              onExpandedChange = { expanded = !expanded },
+              modifier = Modifier.weight(1f)
+            ) {
               OutlinedTextField(
                 value = selectedRole ?: "",
-                onValueChange = { selectedRole = it },
-                label = { Text(stringResource(R.string.platformAdminDashboard_selectRole)) },
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .clickable { expanded = true },
-                enabled = !isUpdatingRole,
+                onValueChange = {},
                 readOnly = true,
+                label = { Text(stringResource(R.string.platformAdminDashboard_selectRole)) },
                 trailingIcon = {
-                  Icon(
-                    imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
-                    contentDescription = null
-                  )
-                }
+                  ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                modifier = Modifier
+                  .menuAnchor()
+                  .fillMaxWidth()
               )
 
-              DropdownMenu(
+              ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                  .background(Color.White)
-                  .fillMaxWidth()
+                onDismissRequest = { expanded = false }
               ) {
                 roles?.forEach { role ->
                   DropdownMenuItem(
-                    text = { Text("${role.value} (${role.description})") },
+                    text = { Text(role.value) },
                     onClick = {
                       selectedRole = role.value
                       expanded = false
-                    },
-                    modifier = Modifier.background(if (!isUpdatingRole) Color.White else Color(0xFFf5f5f5))
+                    }
                   )
                 }
               }
             }
           }
+
+
 
           Spacer(modifier = Modifier.height(8.dp))
 

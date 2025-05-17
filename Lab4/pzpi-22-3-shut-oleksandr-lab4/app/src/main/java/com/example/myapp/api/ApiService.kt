@@ -10,6 +10,7 @@ import com.example.myapp.data.LoginResponse
 import com.example.myapp.data.Room
 import com.example.myapp.data.RoomAnalysis
 import com.example.myapp.data.Role
+import com.example.myapp.data.UpdateUserRoleRequest
 import com.example.myapp.data.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -62,7 +63,6 @@ interface ApiService {
 
   @PATCH("roles/update-user-role")
   suspend fun updateUserRole(
-    @Query("user_id") userId: String,
-    @Query("role_name") roleName: String
+    @Body request: UpdateUserRoleRequest
   ): Response<UserResponse>
 }
