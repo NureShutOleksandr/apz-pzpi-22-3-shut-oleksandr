@@ -77,6 +77,19 @@ fun PlatformAdminScreen(navController: NavController) {
     }
   }
 
+  val refreshUsers: suspend () -> Unit = {
+    try {
+      val response = RetrofitClient.apiService.getUsers()
+      if (response.isSuccessful) {
+        users = response.body()
+      } else {
+        Log.e("PlatformAdmin", "Failed to refresh users: ${response.code()} - ${response.message()}")
+      }
+    } catch (e: Exception) {
+      Log.e("PlatformAdmin", "Error refreshing users: ${e.message}", e)
+    }
+  }
+
   // Функція для оновлення ролі користувача
   val updateUserRole: () -> Unit = {
     if (selectedUserId == null || selectedRole == null) {
@@ -92,6 +105,7 @@ fun PlatformAdminScreen(navController: NavController) {
           )
           val response = RetrofitClient.apiService.updateUserRole(request)
           if (response.isSuccessful) {
+            refreshUsers()
             val updatedUser = response.body()
             if (updatedUser != null) {
               users = users?.map { if (it._id == updatedUser._id) updatedUser else it }

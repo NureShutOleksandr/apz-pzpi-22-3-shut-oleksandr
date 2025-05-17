@@ -82,7 +82,7 @@ export class RolesService {
     user.roles = [role._id]
     await user.save()
 
-    return user
+    return user.populate('roles')
   }
 
   // Deletes a role if it exists and is not assigned to any users
