@@ -19,10 +19,6 @@
     <string name="signup_success">Sign up successful</string>
     <string name="signup_error">Sign up failed</string>
     <string name="no_room_found">No room found</string>
-    <string name="room_temperature">Temperature: %s°C</string>
-    <string name="room_moisture">Moisture: %s%%</string>
-    <string name="room_co2">CO2: %s ppm</string>
-    <string name="room_illumination">Illumination: %s lux</string>
     <string name="analyze_button">Analyze Data</string>
     <string name="analytics_section">Analytics</string>
     <string name="parameter_stats">Parameter Statistics</string>
@@ -42,4 +38,9 @@
     <string name="analysis_success">Analysis completed successfully</string>
     <string name="analysis_failed">Failed to analyze room</string>
     <string name="analysis_error">Error during analysis</string>
+    <string name="room_temperature">Temperature: %1$s</string>
+    <string name="room_moisture">Humidity: %1$s%%</string>
+    <string name="room_co2">CO₂ Level: %1$s ppm</string>
+    <string name="room_illumination">Illumination: %1$s lux</string>
+
 </resources>

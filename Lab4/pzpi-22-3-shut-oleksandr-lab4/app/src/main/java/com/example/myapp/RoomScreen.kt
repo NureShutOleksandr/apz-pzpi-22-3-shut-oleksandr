@@ -147,17 +147,17 @@ fun RoomScreen(
                 color = Color(0xFF7f8c8d)
               )
               Text(
-                text = stringResource(R.string.room_moisture, String.format("%.1f%%", room.moisture)),
+                text = stringResource(R.string.room_moisture, String.format("%.1f", room.moisture)),
                 fontSize = 16.sp,
                 color = Color(0xFF7f8c8d)
               )
               Text(
-                text = stringResource(R.string.room_co2, String.format("%.1f ppm", room.carbonDioxide)),
+                text = stringResource(R.string.room_co2, String.format("%.1f", room.carbonDioxide)),
                 fontSize = 16.sp,
                 color = Color(0xFF7f8c8d)
               )
               Text(
-                text = stringResource(R.string.room_illumination, String.format("%.1f lux", room.illumination)),
+                text = stringResource(R.string.room_illumination, String.format("%.1f", room.illumination)),
                 fontSize = 16.sp,
                 color = Color(0xFF7f8c8d)
               )

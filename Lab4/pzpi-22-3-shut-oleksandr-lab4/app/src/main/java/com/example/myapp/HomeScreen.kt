@@ -1,28 +1,38 @@
 package com.example.myapp
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import com.example.myapp.data.Room
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
   rooms: List<Room>?,
   onRoomClick: (String) -> Unit
 ) {
+  val context = LocalContext.current
+  val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    context.resources.configuration.locales[0]
+  } else {
+    context.resources.configuration.locale
+  }
+
   LazyColumn(
     modifier = Modifier
       .fillMaxSize()
@@ -31,7 +41,6 @@ fun HomeScreen(
     verticalArrangement = Arrangement.spacedBy(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    // Привітальна секція
     item {
       Surface(
         modifier = Modifier
@@ -66,7 +75,6 @@ fun HomeScreen(
       }
     }
 
-    // Список кімнат
     if (rooms.isNullOrEmpty()) {
       item {
         Text(
@@ -99,7 +107,10 @@ fun HomeScreen(
               color = Color(0xFF1e1e1e)
             )
             Text(
-              text = stringResource(R.string.room_temperature, room.temperature),
+              text = stringResource(
+                R.string.room_temperature,
+                convertTemperatureIfNeeded(room.temperature, locale)
+              ),
               fontSize = 16.sp,
               color = Color(0xFF7f8c8d)
             )
@@ -122,5 +133,14 @@ fun HomeScreen(
         }
       }
     }
+  }
+}
+
+fun convertTemperatureIfNeeded(celsius: Double, locale: Locale): String {
+  return if (locale.language == "en") {
+    val fahrenheit = (celsius * 9 / 5) + 32
+    "%.1f°F".format(fahrenheit)
+  } else {
+    "%.1f°C".format(celsius)
   }
 }
