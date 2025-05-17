@@ -47,20 +47,20 @@ fun HomeScreen(
   if (showDialog) {
     AlertDialog(
       onDismissRequest = { showDialog = false },
-      title = { Text(text = "Create New Room") },
+      title = { Text(text = stringResource(R.string.create_new_room)) },
       text = {
         Column {
           OutlinedTextField(
             value = roomName,
             onValueChange = { roomName = it },
-            label = { Text("Room Name") },
+            label = { Text(stringResource(R.string.room_name)) },
             modifier = Modifier.fillMaxWidth()
           )
           Spacer(modifier = Modifier.height(8.dp))
           OutlinedTextField(
             value = temperature,
             onValueChange = { temperature = it },
-            label = { Text("Temperature (°C)") },
+            label = { Text(stringResource(R.string.temperature_celsius)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
           )
@@ -68,7 +68,7 @@ fun HomeScreen(
           OutlinedTextField(
             value = moisture,
             onValueChange = { moisture = it },
-            label = { Text("Moisture (%)") },
+            label = { Text(stringResource(R.string.moisture_percent)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
           )
@@ -76,7 +76,7 @@ fun HomeScreen(
           OutlinedTextField(
             value = carbonDioxide,
             onValueChange = { carbonDioxide = it },
-            label = { Text("CO2 (ppm)") },
+            label = { Text(stringResource(R.string.co2_ppm)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
           )
@@ -84,7 +84,7 @@ fun HomeScreen(
           OutlinedTextField(
             value = illumination,
             onValueChange = { illumination = it },
-            label = { Text("Illumination (lux)") },
+            label = { Text(stringResource(R.string.illumination_lux)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
           )
@@ -108,12 +108,12 @@ fun HomeScreen(
             }
           }
         ) {
-          Text("Create")
+          Text(stringResource(R.string.create))
         }
       },
       dismissButton = {
         TextButton(onClick = { showDialog = false }) {
-          Text("Cancel")
+          Text(stringResource(R.string.cancel))
         }
       }
     )
@@ -148,7 +148,7 @@ fun HomeScreen(
           )
         ) {
           Text(
-            text = "Create Room",
+            text = stringResource(R.string.create_room),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
           )
@@ -262,7 +262,7 @@ fun HomeScreen(
               modifier = Modifier.padding(start = 8.dp)
             ) {
               Text(
-                text = "Delete",
+                text = stringResource(R.string.delete),
                 fontSize = 14.sp
               )
             }

@@ -43,4 +43,13 @@
     <string name="room_co2">CO₂ Level: %1$s ppm</string>
     <string name="room_illumination">Illumination: %1$s lux</string>
     <string name="create_room">Create Room</string>
+    <string name="create_new_room">Create New Room</string>
+    <string name="room_name">Room Name</string>
+    <string name="temperature_celsius">Temperature (°C)</string>
+    <string name="moisture_percent">Moisture (%)</string>
+    <string name="co2_ppm">CO2 (ppm)</string>
+    <string name="illumination_lux">Illumination (lux)</string>
+    <string name="create">Create</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

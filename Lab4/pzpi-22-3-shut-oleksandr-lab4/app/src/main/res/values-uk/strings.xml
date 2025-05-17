@@ -43,4 +43,13 @@
     <string name="room_co2">Рівень CO₂: %1$s ppm</string>
     <string name="room_illumination">Освітлення: %1$s lux</string>
     <string name="create_room">Створити кімнату</string>
+    <string name="create_new_room">Створити нову кімнату</string>
+    <string name="room_name">Назва кімнати</string>
+    <string name="temperature_celsius">Температура (°C)</string>
+    <string name="moisture_percent">Вологість (%)</string>
+    <string name="co2_ppm">CO2 (ppm)</string>
+    <string name="illumination_lux">Освітлення (люкс)</string>
+    <string name="create">Створити</string>
+    <string name="delete">Видалити</string>
+    <string name="cancel">Скасувати</string>
 </resources>
