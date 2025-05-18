@@ -1,0 +1,1002 @@
+﻿Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+з лабораторної роботи №4
+з дисципліни «Архітектура програмного забезпечення»
+на тему: «РОЗРОБКА МОБІЛЬНОГО КЛІЄНТА СИСТЕМИ»
+
+
+
+
+Виконав
+ст. гр. ПЗПІ-22-3
+Шуть Олександр Вікторович
+
+
+
+Перевірив
+ст. викладач кафедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+
+Харків 2025
+1 ІСТОРІЯ ЗМІН
+
+№	Дата	Версія звіту	Опис змін та виправлень
+1	15.05.2025	0.1	Створено структуру звіту. Визначено завдання на лабораторну роботу
+2	18.05.2025	0.1	Описано хід роботи, додаток А, додаток Б, додаток В. Сформульовано висновок роботи
+
+2 ЗАВДАННЯ
+
+     Метою даного лабораторного заняття є розробка мобільної / mobile частини програмної системи.
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+
+     До виконаної роботи було створено відеозвіт, посилання на який наведено у додатку А.
+     Усі графічні матеріали наведені у додатку Б. 
+     У рамках виконання завдання було розроблено клієнтську частину мобільного додатку для платформи Android з використанням мови програмування Kotlin, що забезпечило створення інтерактивного та функціонального інтерфейсу. Робота розпочалася з ініціалізації проєкту в Android Studio, під час якої було налаштовано базову навігацію через Jetpack Navigation Component та основні залежності, такі як Retrofit для роботи з API та Jetpack Compose для створення UI.
+     Надалі було створено набір екранів, таких як головний екран, екрани авторизації та реєстрації, а також екрани для управління кімнатами, адміністрування бази даних, системного адміністрування та платформного адміністрування, що разом сформували цілісну систему для взаємодії користувача з додатком.
+     Основна увага під час розробки була зосереджена на забезпеченні зручності та інтуїтивності інтерфейсу, а також на реалізації ключових функціональних можливостей. Було впроваджено компоненти для відображення даних про кімнати, зокрема їхні кліматичні параметри, аналітичні графіки, таблиці кореляцій, тренди та рекомендації. Для цього використано бібліотеку MPAndroidChart для створення графіків та кастомні composable-компоненти для таблиць і рекомендацій. Окремо реалізовано функціонал адміністрування, який дозволяє управляти користувачами, створювати та відновлювати резервні копії бази даних, а також експортувати та імпортувати конфігурації системи. Для забезпечення коректної роботи використано глобальний стан через ViewModel та Jetpack Compose State, що дало змогу ефективно керувати даними між екранами.
+     Значна частина роботи була присвячена впровадженню локалізації з використанням ресурсів Android (strings.xml). Для кожного екрану створено набір перекладів на англійську та українську мови, що дозволило адаптувати інтерфейс до потреб багатомовних користувачів. Додатково було реалізовано логіку переведення температури з градусів Цельсія в Фаренгейти для англійської локалізації, яка застосовується автоматично залежно від обраної мови пристрою.
+     Для забезпечення візуальної привабливості та зручності використання було розроблено стилі з використанням Jetpack Compose theming та Material Design 3. Стилі були створені з акцентом на сучасний дизайн, адаптивність для різних розмірів екранів та єдність стилістичного оформлення. У результаті виконаної роботи було створено функціональний мобільний додаток із зручним інтерфейсом, підтримкою локалізації та можливостями адміністрування, що відповідає поставленим вимогам.
+     Деякий код застосунку наведено у додатку В.
+
+ВИСНОВКИ
+
+     У результаті виконання даної лабораторної роботи було розроблено клієнтську частину мобільного додатку для платформи Android на базі Kotlin, що включає зручний інтерфейс для взаємодії з користувачами. Створено ключові екрани, зокрема головний, авторизацію, реєстрацію, а також панелі адміністрування, які дозволяють ефективно управляти користувачами, кімнатами, базою даних та системними налаштуваннями. Особливу увагу приділено реалізації локалізації через ресурси Android, що забезпечує підтримку англійської та української мов, а також адаптацію відображення даних, таких як температура, залежно від обраної мови пристрою.
+
+ДОДАТОК А
+Відеозапис
+
+     Відеозапис презентації результатів лабораторної роботи: https://youtu.be/yBpfXTp-FwE
+
+Хронологічний опис відеозапису: 
+00:00 Вітання. Мовець вітається та визначає тему відеозвіту.
+00:28 Загальний функціонал. Демострується загальний функціонал. Операції над об’єктами системи.
+02:18 Функції бізнес логіки. Аналітика кімнати.
+02:48 Функції платформного адміністратора. Демонструється функціонал зміни ролей користувачів.
+05:00 Функції адміністратора баз даних.
+05:50 Функції адміністратора системи.
+07:22 Локалізація та інтерналізація.
+09:00 Висновки.
+
+
+
+
+
+
+ДОДАТОК Б
+Графічні матеріали
+
+
+Рисунок Б.1 — ER-діаграма даних
+
+
+Рисунок Б.2 — Структура бази даних
+
+
+
+Рисунок Б.3 — UML-діаграма прецедентів
+
+ДОДАТОК В
+Програмний код
+
+     В.1 Математична обробка прикладних даних.
+
+     GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab4/pzpi-22-3-shut-oleksandr-lab4/app/src/main/java/com/example/myapp/RoomScreen.kt
+
+1 package com.example.myapp
+2
+3 import android.util.Log
+4 import androidx.compose.foundation.background
+5 import androidx.compose.foundation.layout.*
+6 import androidx.compose.foundation.lazy.LazyColumn
+7 import androidx.compose.foundation.shape.RoundedCornerShape
+8 import androidx.compose.material3.*
+9 import androidx.compose.runtime.*
+10 import androidx.compose.ui.Alignment
+11 import androidx.compose.ui.Modifier
+12 import androidx.compose.ui.graphics.Color
+13 import androidx.compose.ui.platform.LocalConfiguration
+14 import androidx.compose.ui.res.stringResource
+15 import androidx.compose.ui.text.font.FontStyle
+16 import androidx.compose.ui.text.font.FontWeight
+17 import androidx.compose.ui.unit.dp
+18 import androidx.compose.ui.unit.sp
+19 import androidx.compose.ui.viewinterop.AndroidView
+20 import com.example.myapp.api.RetrofitClient
+21 import com.example.myapp.data.Room
+22 import com.example.myapp.data.RoomAnalysis
+23 import com.github.mikephil.charting.charts.BarChart
+24 import com.github.mikephil.charting.components.XAxis
+25 import com.github.mikephil.charting.data.BarData
+26 import com.github.mikephil.charting.data.BarDataSet
+27 import com.github.mikephil.charting.data.BarEntry
+28 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+29 import kotlinx.coroutines.launch
+30 import java.util.Locale
+31
+32 @OptIn(ExperimentalMaterial3Api::class)
+33 @Composable
+34 fun RoomScreen(
+35   room: Room,
+36   onAnalyze: suspend (String) -> RoomAnalysis?,
+37   onNavigateBack: () -> Unit
+38 ) {
+39   val coroutineScope = rememberCoroutineScope()
+40   var roomAnalysis by remember { mutableStateOf<RoomAnalysis?>(null) }
+41   var isAnalysisVisible by remember { mutableStateOf(false) }
+42   var isLoading by remember { mutableStateOf(false) }
+43   var snackbarMessage by remember { mutableStateOf<String?>(null) }
+44   val snackbarHostState = remember { SnackbarHostState() }
+45
+46   val locale = LocalConfiguration.current.locales[0]
+47   val isCelsius = locale.language != "en"
+48
+49   val temperatureToDisplay: (Double) -> String = { temp ->
+50     if (isCelsius) {
+51       String.format("%.1f°C", temp)
+52     } else {
+53       val fahrenheit = temp * 9 / 5 + 32
+54       String.format("%.1f°F", fahrenheit)
+55     }
+56   }
+57
+58   val handleAnalyzeData: () -> Unit = {
+59     coroutineScope.launch {
+60       isLoading = true
+61       var success = false
+62       var failed = false
+63       try {
+64         val analysis = onAnalyze(room._id)
+65         if (analysis != null) {
+66           roomAnalysis = analysis
+67           isAnalysisVisible = true
+68           Log.d("MyApp", "Room analysis loaded: $roomAnalysis")
+69           success = true
+70         } else {
+71           failed = true
+72           Log.d("MyApp", "Failed to analyze room: analysis is null")
+73         }
+74       } catch (e: Exception) {
+75         snackbarMessage = "error" // Використовуємо тимчасовий код помилки
+76         Log.e("MyApp", "Error analyzing room: ${e.message}", e)
+77       } finally {
+78         isLoading = false
+79         if (success) {
+80           snackbarMessage = "success"
+81         } else if (failed) {
+82           snackbarMessage = "failed"
+83         }
+84       }
+85     }
+86   }
+87
+88   Scaffold(
+89     topBar = {
+90       TopAppBar(
+91         title = { Text(stringResource(R.string.room_title)) },
+92         navigationIcon = {
+93           IconButton(onClick = onNavigateBack) {
+94             Text(
+95               text = "←",
+96               fontSize = 24.sp,
+97               color = Color(0xFF1e1e1e)
+98             )
+99           }
+100         },
+101         colors = TopAppBarDefaults.topAppBarColors(
+102           containerColor = Color(0xFFf5f5f5),
+103           titleContentColor = Color(0xFF1e1e1e)
+104         )
+105       )
+106     },
+107     snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+108   ) { innerPadding ->
+109     LazyColumn(
+110       modifier = Modifier
+111         .fillMaxSize()
+112         .background(Color(0xFFf5f5f5))
+113         .padding(innerPadding)
+114         .padding(horizontal = 16.dp),
+115       horizontalAlignment = Alignment.CenterHorizontally,
+116       verticalArrangement = Arrangement.spacedBy(16.dp)
+117     ) {
+118       item {
+119         Surface(
+120           modifier = Modifier
+121             .fillMaxWidth()
+122             .padding(vertical = 8.dp),
+123           shape = RoundedCornerShape(12.dp),
+124           shadowElevation = 4.dp,
+125           color = Color.White
+126         ) {
+127           Column(
+128             modifier = Modifier
+129               .padding(24.dp)
+130               .fillMaxWidth(),
+131             horizontalAlignment = Alignment.CenterHorizontally,
+132             verticalArrangement = Arrangement.spacedBy(16.dp)
+133           ) {
+134             Text(
+135               text = room.roomName,
+136               fontSize = 24.sp,
+137               fontWeight = FontWeight.Bold,
+138               color = Color(0xFF1e1e1e)
+139             )
+140             Column(
+141               modifier = Modifier.fillMaxWidth(),
+142               verticalArrangement = Arrangement.spacedBy(8.dp)
+143             ) {
+144               Text(
+145                 text = stringResource(R.string.room_temperature, temperatureToDisplay(room.temperature)),
+146                 fontSize = 16.sp,
+147                 color = Color(0xFF7f8c8d)
+148               )
+149               Text(
+150                 text = stringResource(R.string.room_moisture, String.format("%.1f", room.moisture)),
+151                 fontSize = 16.sp,
+152                 color = Color(0xFF7f8c8d)
+153               )
+154               Text(
+155                 text = stringResource(R.string.room_co2, String.format("%.1f", room.carbonDioxide)),
+156                 fontSize = 16.sp,
+157                 color = Color(0xFF7f8c8d)
+158               )
+159               Text(
+160                 text = stringResource(R.string.room_illumination, String.format("%.1f", room.illumination)),
+161                 fontSize = 16.sp,
+162                 color = Color(0xFF7f8c8d)
+163               )
+164             }
+165             Button(
+166               onClick = handleAnalyzeData,
+167               modifier = Modifier.fillMaxWidth(),
+168               shape = RoundedCornerShape(8.dp),
+169               enabled = !isLoading,
+170               colors = ButtonDefaults.buttonColors(
+171                 containerColor = Color(0xFFe74c3c),
+172                 contentColor = Color.White
+173               )
+174             ) {
+175               if (isLoading) {
+176                 CircularProgressIndicator(
+177                   modifier = Modifier.size(24.dp),
+178                   color = Color.White
+179                 )
+180               } else {
+181                 Text(
+182                   text = stringResource(R.string.analyze_button),
+183                   fontSize = 16.sp,
+184                   fontWeight = FontWeight.Medium
+185                 )
+186               }
+187             }
+188           }
+189         }
+190       }
+191
+192       if (isAnalysisVisible && roomAnalysis != null) {
+193         item {
+194           Column(
+195             modifier = Modifier
+196               .fillMaxWidth()
+197               .padding(vertical = 16.dp),
+198             verticalArrangement = Arrangement.spacedBy(16.dp)
+199           ) {
+200             Text(
+201               text = stringResource(R.string.analytics_section),
+202               fontSize = 20.sp,
+203               fontWeight = FontWeight.Bold,
+204               color = Color(0xFF1e1e1e)
+205             )
+206
+207             val statsData = roomAnalysis?.analysis?.statistics
+208             if (statsData != null) {
+209               val parametersStats = listOf(
+210                 ParameterStat(
+211                   name = stringResource(R.string.rooms_dashboard_temperature),
+212                   mean = statsData.temperature_mean,
+213                   median = statsData.temperature_median,
+214                   min = statsData.temperature_min,
+215                   max = statsData.temperature_max
+216                 ),
+217                 ParameterStat(
+218                   name = stringResource(R.string.rooms_dashboard_moisture),
+219                   mean = statsData.moisture_mean,
+220                   median = statsData.moisture_median,
+221                   min = statsData.moisture_min,
+222                   max = statsData.moisture_max
+223                 ),
+224                 ParameterStat(
+225                   name = stringResource(R.string.rooms_dashboard_co2),
+226                   mean = statsData.carbonDioxide_mean,
+227                   median = statsData.carbonDioxide_median,
+228                   min = statsData.carbonDioxide_min,
+229                   max = statsData.carbonDioxide_max
+230                 ),
+231                 ParameterStat(
+232                   name = stringResource(R.string.rooms_dashboard_illumination),
+233                   mean = statsData.illumination_mean,
+234                   median = statsData.illumination_median,
+235                   min = statsData.illumination_min,
+236                   max = statsData.illumination_max
+237                 )
+238               )
+239
+240               Text(
+241                 text = stringResource(R.string.parameter_stats),
+242                 fontSize = 18.sp,
+243                 fontWeight = FontWeight.SemiBold,
+244                 color = Color(0xFF2c3e50)
+245               )
+246
+247               parametersStats.forEach { param ->
+248                 BarChartView(
+249                   parameterStat = param,
+250                   modifier = Modifier
+251                     .fillMaxWidth()
+252                     .height(250.dp)
+253                     .padding(vertical = 8.dp),
+254                   isCelsius = isCelsius
+255                 )
+256               }
+257             }
+258
+259             Text(
+260               text = stringResource(R.string.correlations_section),
+261               fontSize = 18.sp,
+262               fontWeight = FontWeight.SemiBold,
+263               color = Color(0xFF2c3e50)
+264             )
+265             Surface(
+266               modifier = Modifier.fillMaxWidth(),
+267               shape = RoundedCornerShape(8.dp),
+268               color = Color.White,
+269               shadowElevation = 2.dp
+270             ) {
+271               Column {
+272                 Row(
+273                   modifier = Modifier
+274                     .fillMaxWidth()
+275                     .background(Color(0xFFf5f5f5))
+276                     .padding(8.dp),
+277                   horizontalArrangement = Arrangement.SpaceBetween
+278                 ) {
+279                   Text(
+280                     text = stringResource(R.string.parameter_pair),
+281                     fontWeight = FontWeight.Bold,
+282                     color = Color(0xFF333333),
+283                     modifier = Modifier.weight(1f)
+284                   )
+285                   Text(
+286                     text = stringResource(R.string.correlation_coefficient),
+287                     fontWeight = FontWeight.Bold,
+288                     color = Color(0xFF333333),
+289                     modifier = Modifier.weight(1f),
+290                     textAlign = androidx.compose.ui.text.style.TextAlign.End
+291                   )
+292                 }
+293                 roomAnalysis?.analysis?.correlation?.forEach { (pair, value) ->
+294                   Row(
+295                     modifier = Modifier
+296                       .fillMaxWidth()
+297                       .padding(horizontal = 8.dp, vertical = 12.dp),
+298                     horizontalArrangement = Arrangement.SpaceBetween
+299                   ) {
+300                     Text(
+301                       text = pair.replace("-", " and "),
+302                       color = Color(0xFF7f8c8d),
+303                       modifier = Modifier.weight(1f)
+304                     )
+305                     Text(
+306                       text = if (value != null) String.format("%.2f", value) else stringResource(R.string.no_data),
+307                       color = Color(0xFF7f8c8d),
+308                       modifier = Modifier.weight(1f),
+309                       textAlign = androidx.compose.ui.text.style.TextAlign.End
+310                     )
+311                   }
+312                   Divider(color = Color(0xFFdddddd))
+313                 }
+314               }
+315             }
+316
+317             Text(
+318               text = stringResource(R.string.trends_section),
+319               fontSize = 18.sp,
+320               fontWeight = FontWeight.SemiBold,
+321               color = Color(0xFF2c3e50)
+322             )
+323             roomAnalysis?.analysis?.trends?.forEach { trend ->
+324               Row(
+325                 modifier = Modifier.padding(vertical = 4.dp)
+326               ) {
+327                 Text(
+328                   text = "• ",
+329                   color = Color(0xFF4a90e2),
+330                   fontSize = 16.sp
+331                 )
+332                 Text(
+333                   text = trend,
+334                   color = Color(0xFF2c3e50),
+335                   fontSize = 16.sp
+336                 )
+337               }
+338             }
+339
+340             Text(
+341               text = stringResource(R.string.recommendations_section),
+342               fontSize = 18.sp,
+343               fontWeight = FontWeight.SemiBold,
+344               color = Color(0xFF2c3e50)
+345             )
+346             roomAnalysis?.analysis?.recommendations?.forEach { recommendation ->
+347               Row(
+348                 modifier = Modifier.padding(vertical = 4.dp)
+349               ) {
+350                 Text(
+351                   text = "✔ ",
+352                   color = Color(0xFF27ae60),
+353                   fontSize = 16.sp
+354                 )
+355                 Text(
+356                   text = recommendation,
+357                   color = Color(0xFF2c3e50),
+358                   fontSize = 16.sp
+359                 )
+360               }
+361             }
+362
+363             Text(
+364               text = stringResource(R.string.regression_section),
+365               fontSize = 18.sp,
+366               fontWeight = FontWeight.SemiBold,
+367               color = Color(0xFF2c3e50)
+368             )
+369             Text(
+370               text = roomAnalysis?.analysis?.regression ?: stringResource(R.string.no_data),
+371               color = Color(0xFF7f8c8d),
+372               fontStyle = FontStyle.Italic,
+373               fontSize = 16.sp
+374             )
+375           }
+376         }
+377       }
+378     }
+379   }
+380 }
+381
+382 data class ParameterStat(
+383   val name: String,
+384   val mean: Double,
+385   val median: Double,
+386   val min: Double,
+387   val max: Double
+388 )
+389
+390 @Composable
+391 fun BarChartView(
+392   parameterStat: ParameterStat,
+393   modifier: Modifier = Modifier,
+394   isCelsius: Boolean
+395 ) {
+396   val meanValue = if (isCelsius || parameterStat.name != stringResource(R.string.rooms_dashboard_temperature)) {
+397     parameterStat.mean
+398   } else {
+399     parameterStat.mean * 9 / 5 + 32
+400   }
+401   val medianValue = if (isCelsius || parameterStat.name != stringResource(R.string.rooms_dashboard_temperature)) {
+402     parameterStat.median
+403   } else {
+404     parameterStat.median * 9 / 5 + 32
+405   }
+406   val minValue = if (isCelsius || parameterStat.name != stringResource(R.string.rooms_dashboard_temperature)) {
+407     parameterStat.min
+408   } else {
+409     parameterStat.min * 9 / 5 + 32
+410   }
+411   val maxValue = if (isCelsius || parameterStat.name != stringResource(R.string.rooms_dashboard_temperature)) {
+412     parameterStat.max
+413   } else {
+414     parameterStat.max * 9 / 5 + 32
+415   }
+416
+417   AndroidView(
+418     modifier = modifier,
+419     factory = { context ->
+420       BarChart(context).apply {
+421         description.isEnabled = false
+422         setFitBars(true)
+423         setDrawGridBackground(false)
+424
+425         xAxis.apply {
+426           position = XAxis.XAxisPosition.BOTTOM
+427           setDrawGridLines(false)
+428           valueFormatter = IndexAxisValueFormatter(listOf(parameterStat.name))
+429         }
+430
+431         axisLeft.setDrawGridLines(true)
+432         axisRight.isEnabled = false
+433
+434         val entriesMean = listOf(BarEntry(0f, meanValue.toFloat()))
+435         val entriesMedian = listOf(BarEntry(1f, medianValue.toFloat()))
+436         val entriesMin = listOf(BarEntry(2f, minValue.toFloat()))
+437         val entriesMax = listOf(BarEntry(3f, maxValue.toFloat()))
+438
+439         val dataSetMean = BarDataSet(entriesMean, "Mean").apply {
+440           color = android.graphics.Color.parseColor("#4a90e2")
+441           setDrawValues(false)
+442         }
+443         val dataSetMedian = BarDataSet(entriesMedian, "Median").apply {
+444           color = android.graphics.Color.parseColor("#82ca9d")
+445           setDrawValues(false)
+446         }
+447         val dataSetMin = BarDataSet(entriesMin, "Min").apply {
+448           color = android.graphics.Color.parseColor("#ff6f61")
+449           setDrawValues(false)
+450         }
+451         val dataSetMax = BarDataSet(entriesMax, "Max").apply {
+452           color = android.graphics.Color.parseColor("#f1c40f")
+453           setDrawValues(false)
+454         }
+455
+456         val barData = BarData(dataSetMean, dataSetMedian, dataSetMin, dataSetMax).apply {
+457           barWidth = 0.2f
+458         }
+459         data = barData
+460
+461         legend.isEnabled = true
+462         legend.textSize = 12f
+463
+464         invalidate()
+465       }
+466     }
+467   )
+468 }
+
+     В.2 Адміністрування бізнес-логіки системи.
+
+     GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab4/pzpi-22-3-shut-oleksandr-lab4/app/src/main/java/com/example/myapp/SystemAdminScreen.kt
+
+1 package com.example.myapp
+2
+3 import android.util.Log
+4 import androidx.compose.foundation.background
+5 import androidx.compose.foundation.layout.*
+6 import androidx.compose.foundation.shape.RoundedCornerShape
+7 import androidx.compose.foundation.text.KeyboardOptions
+8 import androidx.compose.foundation.verticalScroll
+9 import androidx.compose.material3.*
+10 import androidx.compose.runtime.*
+11 import androidx.compose.ui.Alignment
+12 import androidx.compose.ui.Modifier
+13 import androidx.compose.ui.graphics.Color
+14 import androidx.compose.ui.res.stringResource
+15 import androidx.compose.ui.text.font.FontWeight
+16 import androidx.compose.ui.text.input.KeyboardType
+17 import androidx.compose.ui.text.style.TextAlign
+18 import androidx.compose.ui.unit.dp
+19 import androidx.compose.ui.unit.sp
+20 import androidx.navigation.NavController
+21 import androidx.compose.foundation.rememberScrollState
+22 import com.example.myapp.api.RetrofitClient
+23 import com.example.myapp.data.ConfigRule
+24 import com.example.myapp.data.ImportConfigRes
+25 import kotlinx.coroutines.launch
+26 import kotlinx.serialization.encodeToString
+27 import kotlinx.serialization.json.Json
+28 import kotlinx.serialization.json.JsonArray
+29 import kotlinx.serialization.json.JsonElement
+30 import kotlinx.serialization.json.JsonObject
+31 import kotlinx.serialization.json.JsonPrimitive
+32 import kotlinx.serialization.json.buildJsonArray
+33 import kotlinx.serialization.json.buildJsonObject
+34 import kotlinx.serialization.json.decodeFromJsonElement
+35
+36 @Composable
+37 fun SystemAdminScreen(navController: NavController) {
+38   val coroutineScope = rememberCoroutineScope()
+39   var lastExportedConfig by remember { mutableStateOf<List<ConfigRule>?>(null) }
+40   var isExporting by remember { mutableStateOf(false) }
+41   var isImporting by remember { mutableStateOf(false) }
+42   var importConfigData by remember { mutableStateOf("") }
+43
+44   // Default config
+45   val defaultConfig = listOf(
+46     ConfigRule("temperature_mean", ">", 25.0, "Temperature is higher than normal"),
+47     ConfigRule("temperature_mean", "<", 18.0, "Temperature is lower than normal"),
+48     ConfigRule("moisture_mean", "<", 30.0, "Moisture level is critically low"),
+49     ConfigRule("moisture_mean", ">", 60.0, "Moisture level is too high"),
+50     ConfigRule("carbonDioxide_mean", ">", 1000.0, "CO2 concentration is dangerously high"),
+51     ConfigRule("carbonDioxide_mean", "<", 400.0, "CO2 concentration is unusually low"),
+52     ConfigRule("illumination_mean", "<", 200.0, "Room is poorly illuminated"),
+53     ConfigRule("illumination_mean", ">", 800.0, "Room is over-illuminated")
+54   )
+55
+56   LaunchedEffect(Unit) {
+57     importConfigData = Json.encodeToString(defaultConfig)
+58   }
+59
+60   fun exportConfig() = coroutineScope.launch {
+61     isExporting = true
+62     try {
+63       val response = RetrofitClient.apiService.exportConfig()
+64       if (response.isSuccessful) {
+65         val data = response.body()
+66         if (data != null) {
+67           lastExportedConfig = data
+68           Log.d("SystemAdmin", "Config exported: $data")
+69         } else {
+70           Log.e("SystemAdmin", "Export config failed: response body is null")
+71         }
+72       } else {
+73         Log.e("SystemAdmin", "Export config failed: ${response.code()} - ${response.message()}")
+74       }
+75     } catch (e: Exception) {
+76       Log.e("SystemAdmin", "Error exporting config: ${e.message}", e)
+77     } finally {
+78       isExporting = false
+79     }
+80   }
+81
+82   fun importConfig() = coroutineScope.launch {
+83     if (importConfigData.isBlank()) {
+84       Log.w("SystemAdmin", "Import config data is empty")
+85       return@launch
+86     }
+87     isImporting = true
+88     try {
+89       val jsonArray = Json.parseToJsonElement(importConfigData) as? JsonArray
+90         ?: throw IllegalArgumentException("Invalid JSON format: expected an array")
+91
+92       val config = jsonArray.map { element ->
+93         val obj = element as? JsonObject
+94           ?: throw IllegalArgumentException("Invalid JSON format: expected an object")
+95         Json.decodeFromJsonElement<ConfigRule>(obj)
+96       }
+97
+98       val response = RetrofitClient.apiService.importConfig(config)
+99       if (response.isSuccessful) {
+100         val data = response.body()
+101         if (data != null) {
+102           lastExportedConfig = config
+103           Log.d("SystemAdmin", "Config imported successfully: ${data.message}")
+104         } else {
+105           Log.e("SystemAdmin", "Import config failed: response body is null")
+106         }
+107       } else {
+108         Log.e("SystemAdmin", "Import config failed: ${response.code()} - ${response.message()}")
+109       }
+110     } catch (e: Exception) {
+111       Log.e("SystemAdmin", "Error importing config: ${e.message}", e)
+112     } finally {
+113       isImporting = false
+114     }
+115   }
+116
+117   Column(
+118     modifier = Modifier
+119       .fillMaxSize()
+120       .background(Color(0xFFf5f5f5))
+121       .padding(16.dp),
+122     verticalArrangement = Arrangement.spacedBy(16.dp),
+123     horizontalAlignment = Alignment.CenterHorizontally
+124   ) {
+125     Text(
+126       text = stringResource(R.string.systemAdminDashboard_title),
+127       fontSize = 28.sp,
+128       fontWeight = FontWeight.Bold,
+129       color = Color(0xFF2c3e50),
+130       textAlign = TextAlign.Center
+131     )
+132
+133     Surface(
+134       modifier = Modifier
+135         .fillMaxWidth()
+136         .wrapContentHeight(),
+137       shape = RoundedCornerShape(12.dp),
+138       shadowElevation = 6.dp,
+139       color = Color.White
+140     ) {
+141       Column(modifier = Modifier.padding(16.dp)) {
+142         Text(
+143           text = stringResource(R.string.systemAdminDashboard_exportConfiguration),
+144           fontSize = 20.sp,
+145           fontWeight = FontWeight.Bold,
+146           color = Color(0xFF2c3e50)
+147         )
+148         Spacer(modifier = Modifier.height(8.dp))
+149         Button(
+150           onClick = { exportConfig() },
+151           enabled = !isExporting,
+152           modifier = Modifier.fillMaxWidth(),
+153           colors = ButtonDefaults.buttonColors(
+154             containerColor = Color(0xFF4a90e2),
+155             contentColor = Color.White
+156           )
+157         ) {
+158           Text(
+159             text = if (isExporting) stringResource(R.string.systemAdminDashboard_exporting) else stringResource(
+160               R.string.systemAdminDashboard_exportButton
+161             ),
+162             fontSize = 16.sp
+163           )
+164         }
+165         if (lastExportedConfig != null) {
+166           Text(
+167             text = stringResource(R.string.systemAdminDashboard_lastExportedConfig),
+168             fontSize = 14.sp,
+169             color = Color(0xFF7f8c8d),
+170             modifier = Modifier.padding(top = 8.dp)
+171           )
+172           val scrollState = rememberScrollState()
+173           Column(
+174             modifier = Modifier
+175               .background(Color(0xFFf9f9f9))
+176               .padding(8.dp)
+177               .fillMaxWidth()
+178               .heightIn(max = 200.dp)
+179               .verticalScroll(scrollState)
+180           ) {
+181             Text(
+182               text = Json.encodeToString(lastExportedConfig),
+183               fontSize = 12.sp,
+184               color = Color(0xFF2c3e50)
+185             )
+186           }
+187         }
+188       }
+189     }
+190
+191     Surface(
+192       modifier = Modifier
+193         .fillMaxWidth()
+194         .wrapContentHeight(),
+195       shape = RoundedCornerShape(12.dp),
+196       shadowElevation = 6.dp,
+197       color = Color.White
+198     ) {
+199       Column(modifier = Modifier.padding(16.dp)) {
+200         Text(
+201           text = stringResource(R.string.systemAdminDashboard_importConfiguration),
+202           fontSize = 20.sp,
+203           fontWeight = FontWeight.Bold,
+204           color = Color(0xFF2c3e50)
+205         )
+206         Spacer(modifier = Modifier.height(8.dp))
+207         OutlinedTextField(
+208           value = importConfigData,
+209           onValueChange = { importConfigData = it },
+210           label = { Text(stringResource(R.string.systemAdminDashboard_pasteConfigJson)) },
+211           modifier = Modifier
+212             .fillMaxWidth()
+213             .height(150.dp),
+214           enabled = !isImporting,
+215           keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+216         )
+217         Spacer(modifier = Modifier.height(8.dp))
+218         Button(
+219           onClick = { importConfig() },
+220           enabled = !isImporting,
+221           modifier = Modifier.fillMaxWidth(),
+222           colors = ButtonDefaults.buttonColors(
+223             containerColor = Color(0xFF2ecc71),
+224             contentColor = Color.White
+225           )
+226         ) {
+227           Text(
+228             text = if (isImporting) stringResource(R.string.systemAdminDashboard_importing) else stringResource(
+229               R.string.systemAdminDashboard_importButton
+230             ),
+231             fontSize = 16.sp
+232           )
+233         }
+234       }
+235     }
+236   }
+237 }
+
+     В.3 Резервне копіювання користувацьких даних
+
+     GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab4/pzpi-22-3-shut-oleksandr-lab4/app/src/main/java/com/example/myapp/DbAdminScreen.kt
+
+1 package com.example.myapp
+2
+3 import android.util.Log
+4 import androidx.compose.foundation.background
+5 import androidx.compose.foundation.layout.*
+6 import androidx.compose.foundation.shape.RoundedCornerShape
+7 import androidx.compose.foundation.text.KeyboardOptions
+8 import androidx.compose.material3.*
+9 import androidx.compose.runtime.*
+10 import androidx.compose.ui.Alignment
+11 import androidx.compose.ui.Modifier
+12 import androidx.compose.ui.graphics.Color
+13 import androidx.compose.ui.res.stringResource
+14 import androidx.compose.ui.text.font.FontWeight
+15 import androidx.compose.ui.text.input.KeyboardType
+16 import androidx.compose.ui.text.style.TextAlign
+17 import androidx.compose.ui.unit.dp
+18 import androidx.compose.ui.unit.sp
+19 import androidx.navigation.NavController
+20 import com.example.myapp.api.RetrofitClient
+21 import kotlinx.coroutines.launch
+22
+23 @Composable
+24 fun DbAdminScreen(
+25   navController: NavController,
+26   onRoomsUpdated: () -> Unit
+27 ) {
+28   val coroutineScope = rememberCoroutineScope()
+29   var lastBackupPath by remember { mutableStateOf<String?>(null) }
+30   var isCreatingBackup by remember { mutableStateOf(false) }
+31   var isRestoringBackup by remember { mutableStateOf(false) }
+32   var backupName by remember { mutableStateOf("") }
+33
+34   fun createBackup() = coroutineScope.launch {
+35     isCreatingBackup = true
+36     try {
+37       val response = RetrofitClient.apiService.createBackup()
+38       if (response.isSuccessful) {
+39         val data = response.body()
+40         if (data?.success == true && data.message.isNotEmpty()) {
+41           val path = data.message.split("\\")
+42           lastBackupPath = path.last()
+43           Log.d("DbAdmin", "Backup created: $lastBackupPath")
+44         } else {
+45           Log.e("DbAdmin", "Backup creation failed: ${response.code()}")
+46         }
+47       } else {
+48         Log.e("DbAdmin", "Backup creation failed: ${response.code()} - ${response.message()}")
+49       }
+50     } catch (e: Exception) {
+51       Log.e("DbAdmin", "Error creating backup: ${e.message}", e)
+52     } finally {
+53       isCreatingBackup = false
+54     }
+55   }
+56
+57   fun restoreBackup() = coroutineScope.launch {
+58     if (backupName.isBlank()) {
+59       Log.w("DbAdmin", "Backup name is empty")
+60       return@launch
+61     }
+62     isRestoringBackup = true
+63     try {
+64       val response = RetrofitClient.apiService.restoreBackup(mapOf("backupName" to backupName))
+65       if (response.isSuccessful) {
+66         val data = response.body()
+67         if (data?.success == true) {
+68           Log.d("DbAdmin", "Restore successful")
+69           onRoomsUpdated()
+70         } else {
+71           Log.e("DbAdmin", "Restore failed: ${data?.message}")
+72         }
+73       } else {
+74         Log.e("DbAdmin", "Restore failed: ${response.code()} - ${response.message()}")
+75       }
+76     } catch (e: Exception) {
+77       Log.e("DbAdmin", "Error restoring backup: ${e.message}", e)
+78     } finally {
+79       isRestoringBackup = false
+80     }
+81   }
+82
+83   Column(
+84     modifier = Modifier
+85       .fillMaxSize()
+86       .background(Color(0xFFf5f5f5))
+87       .padding(16.dp),
+88     verticalArrangement = Arrangement.spacedBy(16.dp),
+89     horizontalAlignment = Alignment.CenterHorizontally
+90   ) {
+91     Text(
+92       text = stringResource(R.string.dbAdminDashboard_title),
+93       fontSize = 28.sp,
+94       fontWeight = FontWeight.Bold,
+95       color = Color(0xFF2c3e50),
+96       textAlign = TextAlign.Center
+97     )
+98
+99     Surface(
+100       modifier = Modifier
+101         .fillMaxWidth()
+102         .wrapContentHeight(),
+103       shape = RoundedCornerShape(12.dp),
+104       shadowElevation = 6.dp,
+105       color = Color.White
+106     ) {
+107       Column(modifier = Modifier.padding(16.dp)) {
+108         Text(
+109           text = stringResource(R.string.dbAdminDashboard_createBackup),
+110           fontSize = 20.sp,
+111           fontWeight = FontWeight.Bold,
+112           color = Color(0xFF2c3e50)
+113         )
+114         Spacer(modifier = Modifier.height(8.dp))
+115         Button(
+116           onClick = { createBackup() },
+117           enabled = !isCreatingBackup,
+118           modifier = Modifier.fillMaxWidth(),
+119           colors = ButtonDefaults.buttonColors(
+120             containerColor = Color(0xFF4a90e2),
+121             contentColor = Color.White
+122           )
+123         ) {
+124           Text(
+125             text = if (isCreatingBackup) stringResource(R.string.dbAdminDashboard_creating) else stringResource(
+126               R.string.dbAdminDashboard_createBackupButton
+127             ),
+128             fontSize = 16.sp
+129           )
+130         }
+131         if (lastBackupPath != null) {
+132           Text(
+133             text = stringResource(R.string.dbAdminDashboard_lastBackupPath, lastBackupPath!!),
+134             fontSize = 14.sp,
+135             color = Color(0xFF7f8c8d),
+136             modifier = Modifier.padding(top = 8.dp)
+137           )
+138         }
+139       }
+140     }
+141
+142     Surface(
+143       modifier = Modifier
+144         .fillMaxWidth()
+145         .wrapContentHeight(),
+146       shape = RoundedCornerShape(12.dp),
+147       shadowElevation = 6.dp,
+148       color = Color.White
+149     ) {
+150       Column(modifier = Modifier.padding(16.dp)) {
+151         Text(
+152           text = stringResource(R.string.dbAdminDashboard_restoreBackup),
+153           fontSize = 20.sp,
+154           fontWeight = FontWeight.Bold,
+155           color = Color(0xFF2c3e50)
+156         )
+157         Spacer(modifier = Modifier.height(8.dp))
+158         Row(
+159           modifier = Modifier.fillMaxWidth(),
+160           horizontalArrangement = Arrangement.spacedBy(8.dp)
+161         ) {
+162           OutlinedTextField(
+163             value = backupName,
+164             onValueChange = { backupName = it },
+165             label = { Text(stringResource(R.string.dbAdminDashboard_enterBackupFolderName)) },
+166             modifier = Modifier.weight(1f),
+167             enabled = !isRestoringBackup,
+168             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+169           )
+170           Button(
+171             onClick = { restoreBackup() },
+172             enabled = !isRestoringBackup,
+173             colors = ButtonDefaults.buttonColors(
+174               containerColor = Color(0xFF2ecc71),
+175               contentColor = Color.White
+176             )
+177           ) {
+178             Text(
+179               text = if (isRestoringBackup) stringResource(R.string.dbAdminDashboard_restoring) else stringResource(
+180                 R.string.dbAdminDashboard_restoreButton
+181               ),
+182               fontSize = 16.sp
+183             )
+184           }
+185         }
+186       }
+187     }
+188   }
+189 }
+
+
+
