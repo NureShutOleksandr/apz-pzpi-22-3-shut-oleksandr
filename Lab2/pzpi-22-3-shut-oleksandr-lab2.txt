@@ -417,7 +417,7 @@ GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-
 50   }
 51 }
 
-     В.3  Адміністрування бізнес-логіки системи
+     В.3 Адміністрування бізнес-логіки системи
 
 GitHub репозиторій: https://github.com/NureShutOleksandr/apz-pzpi-22-3-shut-oleksandr/blob/main/Lab2/pzpi-22-3-shut-oleksandr-lab2/src/modules/config/config.service.ts
 
